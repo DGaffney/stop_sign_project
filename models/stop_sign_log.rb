@@ -20,6 +20,14 @@ class StopSignLog
   key :gif_saved, Boolean
   before_save :set_random
 
+  def self.indices
+    StopSignLog.ensure_index([[:_random, 1], [:gif_saved, 1]])
+    StopSignLog.ensure_index([[:human_votes_car_present, 1], [:gif_saved, 1]])
+    StopSignLog.ensure_index([[:human_votes_car_stop_violated, 1], [:gif_saved, 1]])
+    StopSignLog.ensure_index([[:human_votes_car_wrong_way_violated, 1], [:gif_saved, 1]])
+    StopSignLog.ensure_index(:imgur_url)
+  end
+
   def self.get_random
     ssl = StopSignLog.order(:_random.desc).where(:_random.gte => rand, gif_saved: true).first
     while ssl.nil?

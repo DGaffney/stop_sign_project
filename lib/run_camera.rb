@@ -86,6 +86,7 @@ class RunCamera
         img_path = `python push_to_imgur.py -g public/gif_cases/#{ssl_filename}`.strip
         ssl.imgur_url = img_path
         ssl.save!
+      end
       puts "Sleeping for one minute to allow Ctrl-C..."
       sleep(60)
     end
