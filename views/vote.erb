@@ -1,0 +1,46 @@
+<div class="row">
+  <a href="/">Back</a>
+</div>
+<script>
+  Mousetrap.bind('j', function() {
+    location.href = location.protocol+"//"+location.host+"/train/vote/<%= @vote_method %>/<%= @ssl.stop_id %>/negative";
+  });
+  Mousetrap.bind('k', function() {
+    location.href = location.protocol+"//"+location.host+"/train/vote/<%= @vote_method %>/<%= @ssl.stop_id %>/affirmative";
+  });
+  Mousetrap.bind('l', function() {
+    location.href = location.protocol+"//"+location.host+"/train/<%= @vote_method %>";
+  });
+</script>
+<div class="row">
+  <h2><%= @vote_type %></h2>
+</div>
+<style>
+#img{
+  background-image: url("<%= @ssl.get_url %>");
+  min-height:402px;
+  color: #f40000;
+  padding-top: 30px;
+  background-size: 720px 402px;
+}
+</style>
+<div class="jumbotron" id="img">
+</div>
+<hr>
+<div class="row">
+  <div class="col">
+    <p><%= @vote_text %></p>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <h3><a href="/train/vote/<%= @vote_method %>/<%= @ssl.stop_id %>/negative"><%= @vote_negative %></a></h3>
+    <p>Keyboard shortcut: press "j" - press "l" to skip</p>
+  </div>
+  <div class="col">
+    <h3><a href="/train/vote/<%= @vote_method %>/<%= @ssl.stop_id %>/affirmative"><%= @vote_affirmative %></a></h3>
+    <p>Keyboard shortcut: press "k" - press "l" to skip</p>
+  </div>
+</div>
+<footer>
+</footer>
