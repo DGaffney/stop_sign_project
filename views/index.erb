@@ -12,11 +12,11 @@
   </div>
   <div class="col">
     <h3><a href="/train/stop_violations">Train Stop Violations</a></h3>
-    <%= Vote.where(vote_method: "stop_violations").count }.flatten.count %> total votes recorded
+    <%= Vote.where(vote_method: "stop_violations").count %> total votes recorded
   </div>
   <div class="col">
     <h3><a href="/train/wrong_way_violations">Train Wrong Way Violations</a></h3>
-    <%= Vote.where(vote_method: "wrong_way_violations").count }.flatten.count %> total votes recorded
+    <%= Vote.where(vote_method: "wrong_way_violations").count %> total votes recorded
   </div>
 </div>
 <hr />
