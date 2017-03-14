@@ -230,16 +230,3 @@ best_models = current_best_fn[0]
 guesses_for_file = []
 for clf in best_models:
   guesses_for_file.append(clf.predict(read_csv("testing.csv")))
-
-non_human_percent = [np.mean(el) > 0.5 for el in np.matrix(guesses_for_file).transpose()].count(True)/float(len(guesses_for_file[0]))
-human_percent = 1-non_human_percent
-adjusted_non_human_percent = non_human_percent-non_human_percent*(best_conmat['fp']/float(best_conmat['fp']+best_conmat['tp']))+non_human_percent*(best_conmat['fn']/float(best_conmat['fn']+best_conmat['tn']))
-adjusted_human_percent = human_percent+human_percent*(best_conmat['fp']/float(best_conmat['fp']+best_conmat['tp']))-human_percent*(best_conmat['fn']/float(best_conmat['fn']+best_conmat['tn']))
-print("Minimum Non Clearly Human Percent")
-print(sorted([non_human_percent, adjusted_non_human_percent])[0])
-print("Maximum Non Clearly Human Percent")
-print(sorted([non_human_percent, adjusted_non_human_percent])[1])
-print("Minimum Clearly Human Percent")
-print(sorted([human_percent, adjusted_human_percent])[0])
-print("Maximum Clearly Human Percent")
-print(sorted([human_percent, adjusted_human_percent])[1])

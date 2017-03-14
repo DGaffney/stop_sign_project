@@ -8,15 +8,15 @@
 <div class="row">
   <div class="col">
     <h3><a href="/train/presence">Train Car Presence</a></h3>
-    <%= @ssls.collect{|x| x.human_votes_car_present }.flatten.count %> total votes recorded
+    <%= Vote.where(vote_method: "presence").count %> total votes recorded
   </div>
   <div class="col">
-    <h3><a href="/train/stop_violations">Train Car Violations</a></h3>
-    <%= @ssls.collect{|x| x.human_votes_car_stop_violated }.flatten.count %> total votes recorded
+    <h3><a href="/train/stop_violations">Train Stop Violations</a></h3>
+    <%= Vote.where(vote_method: "stop_violations").count }.flatten.count %> total votes recorded
   </div>
   <div class="col">
     <h3><a href="/train/wrong_way_violations">Train Wrong Way Violations</a></h3>
-    <%= @ssls.collect{|x| x.human_votes_car_wrong_way_violated }.flatten.count %> total votes recorded
+    <%= Vote.where(vote_method: "wrong_way_violations").count }.flatten.count %> total votes recorded
   </div>
 </div>
 <hr />

@@ -32,11 +32,11 @@ class ExportData
     end
   end
   
-  def self.generate_machine_learning_dataset(key="human_votes_car_present")
+  def self.generate_machine_learning_dataset(key="presence")
     dataset = CSV.open("machine_learning_#{key}.csv", "w")
     weird_ones = []
     StopSignLog.each do |ssl|
-      votes = ssl.send(key)
+      votes = Vote.where(stop_id: ssl.stop_id, vote_method: key).fields(:vote).collect(&:vote)
       row = []
       x_dist = ssl.centroid_data.collect(&:first)
       x_diff_dist = []

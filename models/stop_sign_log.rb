@@ -11,9 +11,6 @@ class StopSignLog
   key :box_data, Array
   key :stop_id, String
   key :observation_timestamp, Integer
-  key :human_votes_car_present, Array
-  key :human_votes_car_stop_violated, Array
-  key :human_votes_car_wrong_way_violated, Array
   key :ml_row, Array
   key :imgur_url, String
   key :_random, Float
@@ -22,9 +19,6 @@ class StopSignLog
 
   def self.indices
     StopSignLog.ensure_index([[:_random, 1], [:gif_saved, 1]])
-    StopSignLog.ensure_index([[:human_votes_car_present, 1], [:gif_saved, 1]])
-    StopSignLog.ensure_index([[:human_votes_car_stop_violated, 1], [:gif_saved, 1]])
-    StopSignLog.ensure_index([[:human_votes_car_wrong_way_violated, 1], [:gif_saved, 1]])
     StopSignLog.ensure_index(:imgur_url)
   end
 
@@ -54,9 +48,6 @@ class StopSignLog
       ssl.centroid_data = row["drive_data"]
       ssl.box_data = row["drive_data_full"]
       ssl.observation_timestamp = row["time"]
-      ssl.human_votes_car_present = []
-      ssl.human_votes_car_stop_violated = []
-      ssl.human_votes_car_wrong_way_violated = []
       ssl.save!
       x_dist = ssl.centroid_data.collect(&:first)
       x_diff_dist = x_dist.rolling_diff
