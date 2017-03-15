@@ -9,8 +9,8 @@ get "/" do
 end
 
 get "/train/:vote_method*" do
-  @previous_stop_id = params[:splat].split("/").last
-  @vote_method = params[:vote_method]
+  @previous_stop_id = params["splat"][0].split("/").last
+  @vote_method = params["vote_method"]
   @vote_type = VOTE_TYPES[@vote_method]["vote_type"]
   @vote_negative = VOTE_TYPES[@vote_method]["vote_negative"]
   @vote_affirmative = VOTE_TYPES[@vote_method]["vote_affirmative"]
