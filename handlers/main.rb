@@ -3,7 +3,8 @@ get "/" do
   erb :"index"
 end
 
-get "/train/presence" do
+get "/train/presence/?:previous_stop_id" do
+  @previous_stop_id = params[:previous_stop_id]
   @vote_type = "Car Presence"
   @vote_method = "presence"
   @vote_negative = "No Car"
@@ -13,7 +14,8 @@ get "/train/presence" do
   erb :"vote"
 end
 
-get "/train/stop_violations" do
+get "/train/stop_violations/?:previous_stop_id" do
+  @previous_stop_id = params[:previous_stop_id]
   @vote_type = "Car Stop Violation"
   @vote_method = "stop_violations"
   @vote_negative = "No Stop"
@@ -23,7 +25,8 @@ get "/train/stop_violations" do
   erb :"vote"
 end
 
-get "/train/wrong_way_violations" do
+get "/train/wrong_way_violations/?:previous_stop_id" do
+  @previous_stop_id = params[:previous_stop_id]
   @vote_type = "Car Wrong Way Violation"
   @vote_method = "wrong_way_violations"
   @vote_negative = "No Wrong Way"
@@ -45,6 +48,5 @@ get "/train/vote/:vote_method/:stop_id/:vote_result" do
     v.save!
   end
   @ssl.save!
-  @previous_stop_id = @ssl.stop_id
-  redirect "/train/#{params[:vote_method]}"
+  redirect "/train/#{params[:vote_method]}/#{@ssl.stop_id}"
 end
