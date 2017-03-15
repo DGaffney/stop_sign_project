@@ -35,8 +35,8 @@ end
 
 get "/train/vote/:vote_method/:stop_id/:vote_result" do
   @ssl = StopSignLog.first(stop_id: params[:stop_id])
-  @ssl.vote_hash[params[:vote_method]] ||= 0
-  @ssl.vote_hash[params[:vote_method]] += 1
+  @ssl.order_hash[params[:vote_method]] ||= 0
+  @ssl.order_hash[params[:vote_method]] += 1
   if params[:vote_result] == "affirmative"
     v = Vote.new(stop_id: params[:stop_id], vote_type: params[:vote_method], vote: 1, vote_ip: request.ip)
     v.save!
