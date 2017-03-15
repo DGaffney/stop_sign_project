@@ -3,13 +3,17 @@
 </div>
 <script>
   Mousetrap.bind('j', function() {
-    location.href = location.protocol+"//"+location.host+"/train/vote/<%= @vote_method %>/<%= @ssl.stop_id %>/negative";
+    location.href = location.protocol+"//"+location.host+"/vote/<%= @vote_method %>/<%= @ssl.stop_id %>/negative";
   });
   Mousetrap.bind('k', function() {
-    location.href = location.protocol+"//"+location.host+"/train/vote/<%= @vote_method %>/<%= @ssl.stop_id %>/affirmative";
+    location.href = location.protocol+"//"+location.host+"/vote/<%= @vote_method %>/<%= @ssl.stop_id %>/affirmative";
   });
   Mousetrap.bind('l', function() {
-    location.href = location.protocol+"//"+location.host+"/train/<%= @vote_method %>";
+    <% if !@previous_stop_id.nil? && !@previous_stop_id.empty? %>
+      location.href = location.protocol+"//"+location.host+"/train/<%= @vote_method %>/<%= @previous_stop_id %>";
+    <% else %>
+      location.href = location.protocol+"//"+location.host+"/train/<%= @vote_method %>";
+    <% end %>
   });
 </script>
 <div class="row">
