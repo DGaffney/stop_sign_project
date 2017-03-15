@@ -3,7 +3,8 @@ get "/" do
   erb :"index"
 end
 
-get "/train/presence/?:previous_stop_id" do
+get "/train/presence*" do
+  puts params
   @previous_stop_id = params[:previous_stop_id]
   @vote_type = "Car Presence"
   @vote_method = "presence"
@@ -14,7 +15,7 @@ get "/train/presence/?:previous_stop_id" do
   erb :"vote"
 end
 
-get "/train/stop_violations/?:previous_stop_id" do
+get "/train/stop_violations*" do
   @previous_stop_id = params[:previous_stop_id]
   @vote_type = "Car Stop Violation"
   @vote_method = "stop_violations"
@@ -25,7 +26,7 @@ get "/train/stop_violations/?:previous_stop_id" do
   erb :"vote"
 end
 
-get "/train/wrong_way_violations/?:previous_stop_id" do
+get "/train/wrong_way_violations*" do
   @previous_stop_id = params[:previous_stop_id]
   @vote_type = "Car Wrong Way Violation"
   @vote_method = "wrong_way_violations"
