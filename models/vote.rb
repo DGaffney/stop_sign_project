@@ -4,7 +4,7 @@ class Vote
   key :stop_id, String
   key :vote_method, String
   key :vote, Integer
-  key :vote_ip, String
+  key :session_id, String
   
   def self.indices
     Vote.ensure_index(:vote_method)

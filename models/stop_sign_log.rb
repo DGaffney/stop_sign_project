@@ -24,9 +24,13 @@ class StopSignLog
 
   def self.get_random
     count = 1
-    ssl = StopSignLog.order(:_random.desc).where(:_random.gte => rand, gif_saved: true).first
-    while ssl.nil? && count < 10
-      ssl = StopSignLog.order(:_random.desc).where(:_random.gte => rand, gif_saved: true).first
+    rand_val = rand
+    puts rand_val
+    ssl = StopSignLog.order(:_random).where(:_random.gte => rand_val, gif_saved: true).first
+    while ssl.nil? && count < 50
+      rand_val = rand
+      puts rand_val
+      ssl = StopSignLog.order(:_random).where(:_random.gte => rand_val, gif_saved: true).first
       count += 1
     end
     ssl
