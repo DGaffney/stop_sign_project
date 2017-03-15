@@ -29,17 +29,17 @@ class StopSignLog
     StopSignLog.ensure_index([[:"order_hash.wrong_way_violations", 1]])
   end
 
-  def self.get_random(vote_method)
+  def self.get_random(vote_method, previous_stop_id=nil)
     ssl = nil
     if Vote.count(vote_method: vote_method) == 0
       count = 1
-      ssl = StopSignLog.order(:_random.desc).where(:_random.gte => rand, gif_saved: true).first
+      ssl = StopSignLog.order(:_random.desc).where(:stop_id.ne => previous_stop_id, :_random.gte => rand, gif_saved: true).first
       while ssl.nil? && count < 10
-        ssl = StopSignLog.order(:_random.desc).where(:_random.gte => rand, gif_saved: true).first
+        ssl = StopSignLog.order(:_random.desc).where(:stop_id.ne => previous_stop_id, :_random.gte => rand, gif_saved: true).first
         count += 1
       end
     else
-      ssl = StopSignLog.order("order_hash.#{vote_method}".to_sym).first
+      ssl = StopSignLog.order("order_hash.#{vote_method}".to_sym).where(:stop_id.ne => previous_stop_id).first
     end
     ssl
   end
