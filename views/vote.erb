@@ -17,7 +17,7 @@
 </div>
 <style>
 #img{
-  background-image: url("<%= @ssl.get_url %>");
+  background-image: url("<%= @ssl.get_url.strip %>");
   min-height:402px;
   color: #f40000;
   padding-top: 30px;
