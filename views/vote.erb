@@ -38,15 +38,14 @@
 </div>
 <div class="row">
   <div class="col">
-    <h3><a href="/train/vote/<%= @vote_method %>/<%= @ssl.stop_id %>/negative"><%= @vote_negative %></a></h3>
+    <h3><a href="/vote/<%= @vote_method %>/<%= @ssl.stop_id %>/negative"><%= @vote_negative %></a></h3>
     <p>Keyboard shortcut: press "j" - press "l" to skip</p>
   </div>
   <div class="col">
-    <h3><a href="/train/vote/<%= @vote_method %>/<%= @ssl.stop_id %>/affirmative"><%= @vote_affirmative %></a></h3>
+    <h3><a href="/vote/<%= @vote_method %>/<%= @ssl.stop_id %>/affirmative"><%= @vote_affirmative %></a></h3>
     <p>Keyboard shortcut: press "k" - press "l" to skip</p>
   </div>
 </div>
 <footer>
   <a href="http://devingaffney.com">Devin, 2017</a> | <a href="http://github.com/DGaffney/stop_sign_project">GitHub</a>
 </footer>
-<%= @previous_stop_id %>
