@@ -23,9 +23,11 @@ class StopSignLog
   end
 
   def self.get_random
+    count = 1
     ssl = StopSignLog.order(:_random.desc).where(:_random.gte => rand, gif_saved: true).first
-    while ssl.nil?
+    while ssl.nil? && count < 10
       ssl = StopSignLog.order(:_random.desc).where(:_random.gte => rand, gif_saved: true).first
+      count += 1
     end
     ssl
   end
@@ -53,11 +55,11 @@ class StopSignLog
       x_diff_dist = x_dist.rolling_diff
       y_dist = ssl.centroid_data.collect(&:last)
       y_diff_dist = y_dist.rolling_diff
-      areas = ssl.box_data.collect{|x| x[3]*x[4]}
+      areas = ssl.box_data.collect{|x| x[2]*x[3]}
       areas_dist = areas.rolling_diff
-      widths = ssl.box_data.collect{|x| x[3]}
+      widths = ssl.box_data.collect{|x| x[2]}
       widths_dist = widths.rolling_diff
-      heights = ssl.box_data.collect{|x| x[4]}
+      heights = ssl.box_data.collect{|x| x[3]}
       heights_dist = heights.rolling_diff
       ssl.ml_row = [
         ssl.at_disallowed_time == true ? 1 : 0,
