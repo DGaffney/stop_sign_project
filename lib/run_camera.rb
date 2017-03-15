@@ -53,7 +53,7 @@ class RunCamera
       streamer_pid = get_stream_pid
       frame_count = get_frame_count
       drop_frame_count = 50
-      while frame_count < 25*60+drop_frame_count && (start_time-Time.now.utc.to_i) < 10*60
+      while frame_count < 25*60+drop_frame_count && (Time.now.utc.to_i-start_time) < 10*60
         sleep(1)
         frame_count = get_frame_count
       end
