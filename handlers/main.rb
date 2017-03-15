@@ -33,7 +33,7 @@ get "/train/wrong_way_violations" do
   erb :"vote"
 end
 
-get "/train/vote/:vote_method/:stop_id/:vote_result/" do
+get "/train/vote/:vote_method/:stop_id/:vote_result" do
   @ssl = StopSignLog.first(stop_id: params[:stop_id])
   @ssl.order_hash[params[:vote_method]] ||= 0
   @ssl.order_hash[params[:vote_method]] += 1
