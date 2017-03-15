@@ -9,7 +9,7 @@
     location.href = location.protocol+"//"+location.host+"/vote/<%= @vote_method %>/<%= @ssl.stop_id %>/affirmative";
   });
   Mousetrap.bind('l', function() {
-    <% if !@previous_stop_id.nil? && !@previous_stop_id.empty? %>
+    <% if @previous_stop_id.nil != [""] %>
       location.href = location.protocol+"//"+location.host+"/train/<%= @vote_method %>/<%= @previous_stop_id %>";
     <% else %>
       location.href = location.protocol+"//"+location.host+"/train/<%= @vote_method %>";
