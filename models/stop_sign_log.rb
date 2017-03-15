@@ -15,17 +15,28 @@ class StopSignLog
   key :imgur_url, String
   key :_random, Float
   key :gif_saved, Boolean
+  key :order_hash, Hash
   before_save :set_random
 
   def self.indices
     StopSignLog.ensure_index([[:_random, 1], [:gif_saved, 1]])
     StopSignLog.ensure_index(:imgur_url)
+    StopSignLog.ensure_index([[:_random, 1], [:"order_hash.presence", 1]])
+    StopSignLog.ensure_index([[:_random, 1], [:"order_hash.stop_violations", 1]])
+    StopSignLog.ensure_index([[:_random, 1], [:"order_hash.wrong_way_violations", 1]])
+    StopSignLog.ensure_index([[:"order_hash.presence", 1]])
+    StopSignLog.ensure_index([[:"order_hash.stop_violations", 1]])
+    StopSignLog.ensure_index([[:"order_hash.wrong_way_violations", 1]])
   end
 
-  def self.get_random
-    ssl = StopSignLog.order(:_random.desc).where(:_random.gte => rand, gif_saved: true).first
-    while ssl.nil?
+  def self.get_random(vote_method)
+    if Vote.count(vote_method: vote_method) == 0
       ssl = StopSignLog.order(:_random.desc).where(:_random.gte => rand, gif_saved: true).first
+      while ssl.nil?
+        ssl = StopSignLog.order(:_random.desc).where(:_random.gte => rand, gif_saved: true).first
+      end
+    else
+      ssl = StopSignLog.order("order_hash.#{vote_method}".to_sym).first
     end
     ssl
   end
