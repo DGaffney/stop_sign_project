@@ -21,6 +21,8 @@ get "/train/:vote_method*" do
   else
     @ssl = StopSignLog.get_random(@vote_method, @previous_stop_id)
   end
+  @ip = request.ip
+  @session_id = request.session["session_id"]
   erb :"vote"
 end
 
