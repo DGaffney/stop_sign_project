@@ -42,9 +42,13 @@ get "/machine/:vote_method*" do
   @vote_direction = nil
   if @ssl.voted_as[@vote_method] == true
     @vote_text = VOTE_TYPES[@vote_method]["machine_vote_yes"]
+    puts VOTE_TYPES[@vote_method]
+    puts VOTE_TYPES[@vote_method]["machine_vote_yes"]
     @vote_direction = true
   elsif @ssl.voted_as[@vote_method] == false
     @vote_text = VOTE_TYPES[@vote_method]["machine_vote_no"]
+    puts VOTE_TYPES[@vote_method]
+    puts VOTE_TYPES[@vote_method]["machine_vote_no"]
     @vote_direction = false
   end
   erb :"machine"
