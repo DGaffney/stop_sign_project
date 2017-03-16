@@ -75,9 +75,7 @@ class RunCamera
       op.processed = false
       op.save!
       if `ls #{CONFIG["project_dir"]}`.split("\n").include?("stop_sign.log")
-        ["presence", "stop_violations", "wrong_way_violations"].each do |vote_method|
-          RunPredictor.new.run if rand < 0.10
-        end
+        RunPredictor.new.run if rand < 0.10
         StopSignLog.import
         op.processed = true
         op.save!

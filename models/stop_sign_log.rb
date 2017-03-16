@@ -145,13 +145,38 @@ class StopSignLog
       else
         ssl.gif_saved = false
       end
-      ["presence", "stop_violations", "wrong_way_violations"].each do |vote_method|
-        ssl.voted_as[vote_method] = `python #{CONFIG["project_dir"]}predict.py -m #{vote_method} -r #{ssl.ml_row.join(",")}`
-      end
       ssl.save!
     end
   end
-  
+
+  def train_ml
+    ["presence", "stop_violations", "wrong_way_violations"].each do |vote_method|
+      if `ls #{CONFIG["project_dir"]}`.split("\n").include?(vote_method+".pkl")
+        vote = `python #{CONFIG["project_dir"]}predict.py -m #{vote_method} -r #{self.ml_row.join(",")}`.strip.to_f
+        if vote > 0.5
+          vote = true
+        else
+          vote = false
+        end
+        self.voted_as[vote_method] = vote
+        self.save!
+      end
+    end
+  end  
+
+  def self.bulk_train_ml
+    ["presence", "stop_violations", "wrong_way_violations"].each do |vote_method|
+      stop_ids = []
+      csv = CSV.open("#{CONFIG["project_dir"]}ml_data_#{vote_method}.csv", "w")
+      StopSignLog.each do |ssl|
+        stop_ids << ssl.stop_id
+        csv << ssl.ml_row
+      end
+      votes = `python #{CONFIG["project_dir"]}predict.py -m #{vote_method} -f #{CONFIG["project_dir"]}ml_data_#{vote_method}.csv`.strip.to_f
+      csv.close
+    end
+  end
+
   def get_url
     if self.imgur_url.nil? || self.imgur_url.empty?
       "/gif_cases/#{self.observation_timestamp}_#{self.stop_id}.gif"

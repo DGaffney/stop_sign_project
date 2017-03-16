@@ -32,9 +32,8 @@ class RunPredictor
       if can_be_learned(vote_method)
         filename = export_datasheet(vote_method, time)
         ml = MachineLearner.first_or_create(vote_method: vote_method)
-        acc = ml.accuracy.to_f
-        results = `python #{CONFIG["project_dir"]}/predictor.py --file #{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv --prev_acc #{acc} --vote_method #{vote_method}`
-        results = `python predictor.py --file datasheet_presence_1489638593.csv --prev_acc 0 --vote_method presence`
+        prev_acc = ml.accuracy.to_f
+        results = `python #{CONFIG["project_dir"]}/predictor.py --file #{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv --prev_acc #{prev_acc} --vote_method #{vote_method}`
         ml.accuracy = (results.strip.to_f.round(4)*100)
         ml.save!
       end
