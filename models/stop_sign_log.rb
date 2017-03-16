@@ -16,6 +16,7 @@ class StopSignLog
   key :_random, Float
   key :gif_saved, Boolean
   key :order_hash, Hash
+  key :voted_as, Hash
   before_save :set_random
 
   def self.indices
@@ -143,6 +144,9 @@ class StopSignLog
         `rm #{CONFIG["project_dir"]}public/gif_cases/#{ssl_filename}`
       else
         ssl.gif_saved = false
+      end
+      ["presence", "stop_violations", "wrong_way_violations"].each do |vote_method|
+        ssl.voted_as[vote_method] = `python #{CONFIG["project_dir"]}predict.py -m #{vote_method} -r #{ssl.ml_row.join(",")}`
       end
       ssl.save!
     end

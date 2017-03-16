@@ -5,12 +5,12 @@ class RunPredictor
   end
 
   #eventually this needs memory optimization.
-  def export_datasheet(method, time)
-    csv = CSV.open("#{CONFIG["project_dir"]}datasheet_#{method}_#{time.to_i}.csv", "w")
+  def export_datasheet(vote_method, time)
+    csv = CSV.open("#{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv", "w")
     vote_avgs = []
     StopSignLog.each do |ssl|
-    vote_avg = Vote.where(stop_id: ssl.stop_id, vote_method: method).to_a.collect(&:vote).average
-      if Vote.where(stop_id: ssl.stop_id, vote_method: method).count >= 1
+    vote_avg = Vote.where(stop_id: ssl.stop_id, vote_method: vote_method).to_a.collect(&:vote).average
+      if Vote.where(stop_id: ssl.stop_id, vote_method: vote_method).count >= 1
         if vote_avg > 0.5
           vote_avg = 1
         else
@@ -23,19 +23,18 @@ class RunPredictor
       end
     end
     csv.close
-    return "datasheet_#{method}_#{time.to_i}.csv"
+    return "datasheet_#{vote_method}_#{time.to_i}.csv"
   end
   
   def run
     time = Time.now
-    ["presence", "stop_violations", "wrong_way_violations"].each do |method|
-      if can_be_learned(method)
-        filename = export_datasheet(method, time)
-        ml = MachineLearner.first_or_create(vote_method: method)
+    ["presence", "stop_violations", "wrong_way_violations"].each do |vote_method|
+      if can_be_learned(vote_method)
+        filename = export_datasheet(vote_method, time)
+        ml = MachineLearner.first_or_create(vote_method: vote_method)
         acc = ml.accuracy.to_f
-        results = `python #{CONFIG["project_dir"]}/predictor.py --file #{CONFIG["project_dir"]}datasheet_#{method}_#{time.to_i}.csv --prev_acc #{acc} --method #{method}`
-        accuracy = results.strip
-        ml.accuracy = (accuracy.to_f.round(4)*100)
+        results = `python #{CONFIG["project_dir"]}/predictor.py --file #{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv --prev_acc #{acc} --vote_method #{vote_method}`
+        ml.accuracy = (results.strip.to_f.round(4)*100)
         ml.save!
       end
     end

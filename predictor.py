@@ -76,7 +76,7 @@ ap.add_argument("-f", "--file", help="file to learn from")
 ap.add_argument("-p", "--prev_acc", type=float, help="previous model accuracy")
 ap.add_argument("-m", "--vote_method", help="what vote method is this voting on?")
 args = vars(ap.parse_args())
-args['file'] = "datasheet_presence_1489638593.csv"
+
 def produce_ensemble_guesses_restricted(all_guesses, fold_labels, clfs, included_clfs):
   success = 0
   count = 0.0
@@ -191,6 +191,13 @@ def generate_folds(dataset, labels, fold_count):
 				folded[c]['train_labels'].append(labels[i])
 	return folded
 
+def random_combination(iterable, r):
+  "Random selection from itertools.combinations(iterable, r)"
+  pool = tuple(iterable)
+  n = len(pool)
+  indices = sorted(random.sample(xrange(n), r))
+  return tuple(pool[i] for i in indices)
+
 all_conmats, all_guesses, fold_labels, used_models = run_ensemble_binary(args['file'], models, [], False)
 keys, dataset, labels = dataset_array_form_from_csv(args['file'], [], False)
 current_best_fn = [[], 0]
@@ -198,33 +205,22 @@ current = 0
 improvement_count = 0
 best_conmat = {}
 total_iters = 0
-while total_iters < 2000:
-  for i in range(len(models)):
-    print i
-    for h in itertools.combinations(models, i+1):
-      total_iters += 1
-      conmat, pct = produce_ensemble_guesses_restricted(all_guesses, fold_labels, models, [str(m) for m in h])
-      current += 1
-      if current_best_fn[-1] < pct:
-        current = 0
-        improvement_count += 1
-        current_best_fn = [h, pct]
-        best_conmat = conmat
-        print conmat
-        print current_best_fn[-1]
-      try:
-        h = [random.choice(models) for m in np.arange(int(np.random.random()*len(models)))]
-        conmat, pct = produce_ensemble_guesses_restricted(all_guesses, fold_labels, models, [str(m) for m in h])
-        current += 1
-        if current_best_fn[-1] < pct:
-          current = 0
-          improvement_count += 1
-          current_best_fn = [h, pct]
-          best_conmat = conmat
-          print conmat
-          print current_best_fn[-1]
-      except:
-        print "whoops"
+while total_iters < 200:
+  try:
+    h = random_combination(models, int(random.random() * len(models)))
+    print total_iters
+    conmat, pct = produce_ensemble_guesses_restricted(all_guesses, fold_labels, models, [str(m) for m in h])
+    current += 1
+    total_iters += 1
+    if current_best_fn[-1] < pct:
+      current = 0
+      improvement_count += 1
+      current_best_fn = [h, pct]
+      best_conmat = conmat
+      print conmat
+      print current_best_fn[-1]
+  except:
+    print "whoops"
 
 if current_best_fn[-1] > args["prev_acc"]:
   model_file = open(args["vote_method"]+".pkl", "wb")
