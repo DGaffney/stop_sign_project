@@ -9,6 +9,7 @@
   <div class="col">
     <h3><a href="/train/presence">Train Car Presence</a></h3>
     <%= Vote.where(vote_method: "presence").count.delimited %> total votes recorded
+    <p>Current Machine Accuracy: <%= MachineLearner.first(vote_method: "presence").accuracy %>% (<a href="/machine/presence">see examples</a>)</p>
   </div>
   <div class="col">
     <h3><a href="/train/stop_violations">Train Stop Violations</a></h3>
