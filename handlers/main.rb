@@ -15,7 +15,11 @@ get "/train/:vote_method*" do
   @vote_negative = VOTE_TYPES[@vote_method]["vote_negative"]
   @vote_affirmative = VOTE_TYPES[@vote_method]["vote_affirmative"]
   @vote_text = VOTE_TYPES[@vote_method]["vote_text"]
-  @ssl = StopSignLog.get_random(@vote_method, @previous_stop_id)
+  if @vote_method == "stop_violations"
+    @ssl = StopSignLog.get_random(@vote_method, @previous_stop_id, {"voted_as.presence" => true})
+  else
+    @ssl = StopSignLog.get_random(@vote_method, @previous_stop_id)
+  end
   erb :"vote"
 end
 
