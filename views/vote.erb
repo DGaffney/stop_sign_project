@@ -9,11 +9,11 @@
         </button>
       </div>
       <div class="modal-body">
-        Please read the vote instructions very specifically - you are voting only on the truth or falseness of that statement and nothing else - that is, if you're training on whether or not a car is present, you don't care if the car stops. The following statement is what you're assessing:
-        <%= @vote_text %>
+        Please read the vote instructions <b>very specifically</b> - you are voting only on the truth or falseness of the statement on hand and nothing else - that is, if you're training on whether or not a car is present, you don't care if the car stops, only if you see a car in the GIF. The following statement is what you're assessing:
+        <em>"<%= @vote_text %>"</em>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
