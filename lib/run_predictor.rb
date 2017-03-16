@@ -27,18 +27,22 @@ class RunPredictor
   end
   
   def run
-    time = Time.now
-    ["presence", "stop_violations", "wrong_way_violations"].each do |vote_method|
-      if can_be_learned(vote_method)
-        puts "Updating model of #{vote_method}"
-        filename = export_datasheet(vote_method, time)
-        ml = MachineLearner.first_or_create(vote_method: vote_method)
-        prev_acc = ml.accuracy.to_f
-        results = `python #{CONFIG["project_dir"]}/predictor.py --file #{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv --prev_acc #{prev_acc} --vote_method #{vote_method}`
-        ml.accuracy = (results.strip.to_f.round(4)*100)
-        ml.save!
+    begin
+      time = Time.now
+      ["presence", "stop_violations", "wrong_way_violations"].each do |vote_method|
+        if can_be_learned(vote_method)
+          puts "Updating model of #{vote_method}"
+          filename = export_datasheet(vote_method, time)
+          ml = MachineLearner.first_or_create(vote_method: vote_method)
+          prev_acc = ml.accuracy.to_f
+          results = `python #{CONFIG["project_dir"]}/predictor.py --file #{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv --prev_acc #{prev_acc} --vote_method #{vote_method}`
+          ml.accuracy = (results.strip.to_f.round(4)*100)
+          ml.save!
+        end
       end
+      StopSignLog.bulk_train_ml
+    rescue Exception => e
+      puts "Weird issue happened: #{e}"
     end
-    StopSignLog.bulk_train_ml
   end
 end
