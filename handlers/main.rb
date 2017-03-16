@@ -36,14 +36,15 @@ end
 
 get "/machine/:vote_method*" do
   @previous_stop_id = params["splat"][0].split("/").last
-  @ssl = StopSignLog.get_random(params["vote_method"], @previous_stop_id)
+  @vote_method = params["vote_method"]
+  @ssl = StopSignLog.get_random(@vote_method, @previous_stop_id)
   @vote_text = "The machine hasn't voted on this yet"
   @vote_direction = nil
-  if @ssl.voted_as[params["vote_method"]] == true
-    @vote_text = VOTE_TYPES[params["vote_method"]]["machine_vote_yes"]
+  if @ssl.voted_as[@vote_method] == true
+    @vote_text = VOTE_TYPES[@vote_method]["machine_vote_yes"]
     @vote_direction = true
-  elsif @ssl.voted_as[params["vote_method"]] == false
-    @vote_text = VOTE_TYPES[params["vote_method"]]["machine_vote_no"]
+  elsif @ssl.voted_as[@vote_method] == false
+    @vote_text = VOTE_TYPES[@vote_method]["machine_vote_no"]
     @vote_direction = false
   end
   erb :"machine"
