@@ -24,9 +24,11 @@ class StopSignLog
     StopSignLog.ensure_index(:imgur_url)
     StopSignLog.ensure_index([[:_random, 1], [:"order_hash.presence", 1]])
     StopSignLog.ensure_index([[:_random, 1], [:"order_hash.stop_violations", 1]])
+    StopSignLog.ensure_index([[:_random, 1], [:"order_hash.full_scene", 1]])
     StopSignLog.ensure_index([[:_random, 1], [:"order_hash.wrong_way_violations", 1]])
     StopSignLog.ensure_index([[:"order_hash.presence", 1]])
     StopSignLog.ensure_index([[:"order_hash.stop_violations", 1]])
+    StopSignLog.ensure_index([[:"order_hash.full_scene", 1]])
     StopSignLog.ensure_index([[:"order_hash.wrong_way_violations", 1]])
   end
 
@@ -151,7 +153,7 @@ class StopSignLog
   end
 
   def train_ml
-    ["presence", "stop_violations", "wrong_way_violations"].each do |vote_method|
+    ["presence", "stop_violations", "wrong_way_violations", "full_scene"].each do |vote_method|
       if `ls #{CONFIG["project_dir"]}`.split("\n").include?(vote_method+".pkl")
         vote = `python #{CONFIG["project_dir"]}predict.py -m #{vote_method} -r #{self.ml_row.join(",")}`.strip.to_f
         if vote > 0.5
@@ -166,7 +168,7 @@ class StopSignLog
   end  
 
   def self.bulk_train_ml
-    ["presence", "stop_violations", "wrong_way_violations"].each do |vote_method|
+    ["presence", "stop_violations", "wrong_way_violations", "full_scene"].each do |vote_method|
       stop_ids = []
       csv = CSV.open("#{CONFIG["project_dir"]}ml_data_#{vote_method}.csv", "w")
       StopSignLog.each do |ssl|
