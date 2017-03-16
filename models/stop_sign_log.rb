@@ -183,6 +183,7 @@ class StopSignLog
         end
         ssl.save!
       end
+      `rm #{CONFIG["project_dir"]}ml_data_#{vote_method}.csv`
     end
   end
 

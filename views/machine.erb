@@ -1,0 +1,41 @@
+<div class="row">
+  <a href="/">Back</a>
+</div>
+<script>
+  Mousetrap.bind('l', function() {
+    <% if @previous_stop_id != [""] %>
+      location.href = location.protocol+"//"+location.host+"/machine/<%= @vote_method %>/<%= @previous_stop_id %>";
+    <% else %>
+      location.href = location.protocol+"//"+location.host+"/machine/<%= @vote_method %>";
+    <% end %>
+  });
+</script>
+<div class="row">
+  <h2><%= @vote_type %></h2>
+</div>
+<style>
+#img{
+  background-image: url("<%= @ssl.get_url.strip %>");
+  min-height:402px;
+  color: #f40000;
+  padding-top: 30px;
+  background-size: 720px 402px;
+}
+</style>
+<div class="jumbotron" id="img">
+</div>
+<hr>
+<div class="row">
+  <div class="col">
+    <% if @vote_direction == nil %>
+      <h1><%= @vote_text %></h1>
+    <% elsif @vote_direction == true %>
+      <h1><span style="color: green"><%= @vote_text %></span></h1>
+    <% elsif @vote_direction == false %>
+      <h1><span style="color: red"><%= @vote_text %></span></h1>
+    <% end %>
+  </div>
+</div>
+<footer>
+  <a href="http://devingaffney.com">Devin, 2017</a> | <a href="http://github.com/DGaffney/stop_sign_project">GitHub</a>
+</footer>
