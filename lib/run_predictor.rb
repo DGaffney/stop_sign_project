@@ -36,8 +36,8 @@ class RunPredictor
         results = `python #{CONFIG["project_dir"]}/predictor.py --file #{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv --prev_acc #{prev_acc} --vote_method #{vote_method}`
         ml.accuracy = (results.strip.to_f.round(4)*100)
         ml.save!
-        StopSignLog.bulk_train_ml
       end
     end
+    StopSignLog.bulk_train_ml
   end
 end
