@@ -172,8 +172,9 @@ class StopSignLog
         stop_ids << ssl.stop_id
         csv << ssl.ml_row
       end
-      votes = `python #{CONFIG["project_dir"]}predict.py -m #{vote_method} -f #{CONFIG["project_dir"]}ml_data_#{vote_method}.csv`.strip.to_f
       csv.close
+      votes = JSON.parse(`python #{CONFIG["project_dir"]}predict.py -m #{vote_method} -f #{CONFIG["project_dir"]}ml_data_#{vote_method}.csv`.strip)
+      stop_ids.zip(votes)
     end
   end
 
