@@ -1,3 +1,5 @@
+import pickle
+import argparse
 import itertools
 from sklearn.linear_model import Perceptron
 from sklearn import linear_model
@@ -8,7 +10,6 @@ from scipy import stats
 from sklearn.linear_model import LogisticRegression
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import VotingClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import ensemble
@@ -27,7 +28,6 @@ from sklearn.linear_model import SGDClassifier
 from os import listdir
 from os.path import isfile, join
 import numpy as np
-import csv
 models = [
 Perceptron(fit_intercept=False, n_iter=10, shuffle=False),
 Perceptron(fit_intercept=False, n_iter=3, shuffle=False),
@@ -36,10 +36,6 @@ Perceptron(fit_intercept=True, n_iter=10, shuffle=False),
 Perceptron(fit_intercept=True, n_iter=3, shuffle=False),
 Perceptron(fit_intercept=True, n_iter=5, shuffle=False),
 linear_model.Ridge(alpha = .5),
-SVC(kernel="linear", max_iter=1000), 
-SVC(kernel="poly", degree=3, max_iter=1000), 
-SVC(kernel="rbf", max_iter=1000), 
-SVC(kernel="sigmoid", max_iter=1000),
 svm.LinearSVC(),
 svm.SVR(),
 SGDClassifier(loss="hinge", penalty="l2"),
@@ -70,14 +66,17 @@ linear_model.ElasticNet(alpha=0.1, l1_ratio=0.7),
 linear_model.ElasticNet(alpha=0.5, l1_ratio=0.7),
 linear_model.ElasticNet(alpha=0.1, l1_ratio=0.2),
 linear_model.ElasticNet(alpha=0.5, l1_ratio=0.2),
-# gaussian_process.GaussianProcess(theta0=1e-2, thetaL=1e-4, thetaU=1e-1),
 linear_model.RidgeCV(alphas=[0.1, 1.0, 10.0]),
 linear_model.LassoLars(alpha=0.1),
 linear_model.LassoLars(alpha=0.5),
-linear_model.BayesianRidge(),
-ensemble.GradientBoostingClassifier(**{'n_estimators': 1000, 'max_leaf_nodes': 4, 'max_depth': None, 'random_state': 2, 'min_samples_split': 5, 'learning_rate': 1.0, 'subsample': 1.0}),
-GradientBoostingRegressor(n_estimators=100, learning_rate=0.1, max_depth=1, random_state=0, loss='ls')]
+linear_model.BayesianRidge()]
 
+ap = argparse.ArgumentParser()
+ap.add_argument("-f", "--file", help="file to learn from")
+ap.add_argument("-p", "--prev_acc", type=float, help="previous model accuracy")
+ap.add_argument("-m", "--vote_method", help="what vote method is this voting on?")
+args = vars(ap.parse_args())
+args['file'] = "datasheet_presence_1489638593.csv"
 def produce_ensemble_guesses_restricted(all_guesses, fold_labels, clfs, included_clfs):
   success = 0
   count = 0.0
@@ -123,6 +122,7 @@ def run_ensemble_binary(filename, models, str_columns, keys_included):
   guesses = []
   fold_labels = [fold["test_labels"] for fold in folds]
   for clf in models:
+    print clf
     this_conmat = {'fp': 0, 'fn': 0, 'tp': 0, 'tn': 0}
     this_guess = []
     for fold in folds:
@@ -191,20 +191,20 @@ def generate_folds(dataset, labels, fold_count):
 				folded[c]['train_labels'].append(labels[i])
 	return folded
 
-all_conmats, all_guesses, fold_labels, used_models = run_ensemble_binary("machine_learning_human_votes_car_present.csv", models, [], True)
-keys, dataset, labels = dataset_array_form_from_csv("machine_learning_human_votes_car_present.csv", [], True)
+all_conmats, all_guesses, fold_labels, used_models = run_ensemble_binary(args['file'], models, [], False)
+keys, dataset, labels = dataset_array_form_from_csv(args['file'], [], False)
 current_best_fn = [[], 0]
 current = 0
 improvement_count = 0
 best_conmat = {}
-
-while current < 10000000:
+total_iters = 0
+while total_iters < 2000:
   for i in range(len(models)):
     print i
     for h in itertools.combinations(models, i+1):
-      #h = [random.choice(models) for m in np.arange(int(np.random.random()*len(models)/2))]
+      total_iters += 1
       conmat, pct = produce_ensemble_guesses_restricted(all_guesses, fold_labels, models, [str(m) for m in h])
-      # current += 1
+      current += 1
       if current_best_fn[-1] < pct:
         current = 0
         improvement_count += 1
@@ -215,7 +215,7 @@ while current < 10000000:
       try:
         h = [random.choice(models) for m in np.arange(int(np.random.random()*len(models)))]
         conmat, pct = produce_ensemble_guesses_restricted(all_guesses, fold_labels, models, [str(m) for m in h])
-        # current += 1
+        current += 1
         if current_best_fn[-1] < pct:
           current = 0
           improvement_count += 1
@@ -226,7 +226,8 @@ while current < 10000000:
       except:
         print "whoops"
 
-best_models = current_best_fn[0]
-guesses_for_file = []
-for clf in best_models:
-  guesses_for_file.append(clf.predict(read_csv("testing.csv")))
+if current_best_fn[-1] > args["prev_acc"]:
+  model_file = open(args["vote_method"]+".pkl", "wb")
+  pickle.dump(current_best_fn[0], model_file)
+  model_file.close()
+  print current_best_fn[-1]
