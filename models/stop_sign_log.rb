@@ -47,6 +47,10 @@ class StopSignLog
     ssl
   end
 
+  def observation
+    ObservationPeriod.where(observation_timestamp: Time.at(self.observation_timestamp)).first
+  end
+
   def set_random
     self._random = rand
   end

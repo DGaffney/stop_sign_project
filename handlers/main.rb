@@ -42,7 +42,11 @@ end
 get "/machine/:vote_method*" do
   @previous_stop_id = params["splat"][0].split("/").last
   @vote_method = params["vote_method"]
-  @ssl =  StopSignLog.order(:_random).where(:stop_id.ne => @previous_stop_id, :_random.gte => rand, gif_saved: true).first
+  if @vote_method == "full_scene"
+    @ssl =  StopSignLog.order(:_random).where("voted_as.presence" => true, "voted_as.#{@vote_method}" => [true, false].shuffle.first, :stop_id.ne => @previous_stop_id, :_random.gte => rand, gif_saved: true).first
+  else
+    @ssl =  StopSignLog.order(:_random).where("voted_as.#{@vote_method}" => [true, false].shuffle.first, :stop_id.ne => @previous_stop_id, :_random.gte => rand, gif_saved: true).first
+  end
   @vote_text = "The machine hasn't voted on this yet"
   @vote_direction = nil
   if @ssl.voted_as[@vote_method] == true

@@ -18,4 +18,8 @@ class ObservationPeriod
       end
     end
   end
+  
+  def logs
+    StopSignLog.where(observation_timestamp: self.observation_timestamp.utc.to_i)
+  end
 end
