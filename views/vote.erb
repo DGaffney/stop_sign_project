@@ -1,3 +1,29 @@
+<% if @previous_stop_id.nil? #more exact: Vote.count(session_id: @session_id) == 0 || Vote.count(vote_ip: @ip) == 0 || Vote.count(vote_ip: @ip, vote_method: @vote_method) == 0 && Vote.count(session_id: @session_id, vote_method: @vote_method) == 0 %>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Before we begin...</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Please read the vote instructions very specifically - you are voting only on the truth or falseness of that statement and nothing else - that is, if you're training on whether or not a car is present, you don't care if the car stops. The following statement is what you're assessing:
+        <%= @vote_text %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+    $(window).load(function(){
+        $('#myModal').modal('show');
+    });
+</script>
+<% end %>
 <div class="row">
   <a href="/">Back</a>
 </div>
