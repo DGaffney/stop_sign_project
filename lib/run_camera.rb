@@ -75,7 +75,10 @@ class RunCamera
       op.processed = false
       op.save!
       if `ls #{CONFIG["project_dir"]}`.split("\n").include?("stop_sign.log")
-        RunPredictor.new.run if rand < 0.10
+        if rand < 0.10
+          puts "Updating ML Models!"
+          RunPredictor.new.run
+        end
         StopSignLog.import
         op.processed = true
         op.save!

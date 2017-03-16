@@ -30,6 +30,7 @@ class RunPredictor
     time = Time.now
     ["presence", "stop_violations", "wrong_way_violations"].each do |vote_method|
       if can_be_learned(vote_method)
+        puts "Updating model of #{vote_method}"
         filename = export_datasheet(vote_method, time)
         ml = MachineLearner.first_or_create(vote_method: vote_method)
         prev_acc = ml.accuracy.to_f
