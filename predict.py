@@ -1,3 +1,5 @@
+import csv
+import json
 import argparse
 import pickle
 ap = argparse.ArgumentParser()
@@ -25,6 +27,7 @@ if args["row"] is not None:
     else:
       prediction = 0
     predictions.append(prediction)
+  print (sum(predictions)/float(len(predictions)))
 elif args["filename"] is not None:
   dataset = read_csv(args["filename"])
   all_predictions = []
@@ -38,5 +41,4 @@ elif args["filename"] is not None:
         prediction = 0
       predictions.append(prediction)
     all_predictions.append(sum(predictions)/float(len(predictions)))
-
-print(json.dumps(all_predictions))
+  print(json.dumps(all_predictions))
