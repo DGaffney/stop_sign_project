@@ -76,7 +76,9 @@ ap.add_argument("-f", "--file", help="file to learn from")
 ap.add_argument("-p", "--prev_acc", type=float, help="previous model accuracy")
 ap.add_argument("-m", "--vote_method", help="what vote method is this voting on?")
 args = vars(ap.parse_args())
-
+args["file"] = "datasheet_presence_1489638593.csv"
+args["prev_acc"] = 0
+args["vote_method"] = "presence"
 def produce_ensemble_guesses_restricted(all_guesses, fold_labels, clfs, included_clfs):
   success = 0
   count = 0.0
@@ -122,7 +124,6 @@ def run_ensemble_binary(filename, models, str_columns, keys_included):
   guesses = []
   fold_labels = [fold["test_labels"] for fold in folds]
   for clf in models:
-    print clf
     this_conmat = {'fp': 0, 'fn': 0, 'tp': 0, 'tn': 0}
     this_guess = []
     for fold in folds:
@@ -208,7 +209,6 @@ total_iters = 0
 while total_iters < 200:
   try:
     h = random_combination(models, int(random.random() * len(models)))
-    print total_iters
     conmat, pct = produce_ensemble_guesses_restricted(all_guesses, fold_labels, models, [str(m) for m in h])
     current += 1
     total_iters += 1
@@ -217,10 +217,8 @@ while total_iters < 200:
       improvement_count += 1
       current_best_fn = [h, pct]
       best_conmat = conmat
-      print conmat
-      print current_best_fn[-1]
   except:
-    print "whoops"
+    gg = 1
 
 if current_best_fn[-1] > args["prev_acc"]:
   model_file = open(args["vote_method"]+".pkl", "wb")
