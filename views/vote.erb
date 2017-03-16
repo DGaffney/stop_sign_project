@@ -46,15 +46,24 @@
   <h2><%= @vote_type %></h2>
 </div>
 <style>
-#img{
+.jumbotron_img_responsive {
   background-image: url("<%= @ssl.get_url.strip %>");
-  min-height:402px;
+  background-size: cover;
   color: #f40000;
   padding-top: 30px;
-  background-size: 720px 402px;
+}
+
+/* For width 400px and larger: */
+@media only screen and (min-width: 750px) {
+    .jumbotron_img_responsive { 
+      background-image: url("<%= @ssl.get_url.strip %>");
+      background-size: cover;
+      color: #f40000;
+      padding-top: 30px;
+    }
 }
 </style>
-<div class="jumbotron responsive" id="img">
+<div class="jumbotron jumbotron_img_responsive" id="img">
 </div>
 <hr>
 <div class="row">
