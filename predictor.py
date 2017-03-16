@@ -76,9 +76,6 @@ ap.add_argument("-f", "--file", help="file to learn from")
 ap.add_argument("-p", "--prev_acc", type=float, help="previous model accuracy")
 ap.add_argument("-m", "--vote_method", help="what vote method is this voting on?")
 args = vars(ap.parse_args())
-args["file"] = "datasheet_presence_1489638593.csv"
-args["prev_acc"] = 0
-args["vote_method"] = "presence"
 def produce_ensemble_guesses_restricted(all_guesses, fold_labels, clfs, included_clfs):
   success = 0
   count = 0.0
