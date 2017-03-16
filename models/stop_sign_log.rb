@@ -145,6 +145,7 @@ class StopSignLog
       else
         ssl.gif_saved = false
       end
+      ssl.train_ml
       ssl.save!
     end
   end

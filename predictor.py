@@ -68,8 +68,8 @@ linear_model.ElasticNet(alpha=0.1, l1_ratio=0.2),
 linear_model.ElasticNet(alpha=0.5, l1_ratio=0.2),
 linear_model.RidgeCV(alphas=[0.1, 1.0, 10.0]),
 linear_model.LassoLars(alpha=0.1),
-linear_model.LassoLars(alpha=0.5),
-linear_model.BayesianRidge()]
+linear_model.LassoLars(alpha=0.5)]
+#linear_model.BayesianRidge()]
 
 ap = argparse.ArgumentParser()
 ap.add_argument("-f", "--file", help="file to learn from")
