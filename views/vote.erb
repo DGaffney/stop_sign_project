@@ -49,15 +49,26 @@
 .jumbotron_img_responsive {
   background-image: url("<%= @ssl.get_url.strip %>");
   background-size: cover;
+  min-height:223px;
   color: #f40000;
   padding-top: 30px;
 }
 
+@media only screen and (min-width: 768px) {
+    .jumbotron_img_responsive { 
+      background-image: url("<%= @ssl.get_url.strip %>");
+      background-size: cover;
+      min-height:249px;
+      color: #f40000;
+      padding-top: 30px;
+    }
+}
 /* For width 400px and larger: */
 @media only screen and (min-width: 750px) {
     .jumbotron_img_responsive { 
       background-image: url("<%= @ssl.get_url.strip %>");
       background-size: cover;
+      min-height:402px;
       color: #f40000;
       padding-top: 30px;
     }
