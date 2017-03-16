@@ -44,4 +44,4 @@ elif args["filename"] is not None:
       else:
         predicted.append(0)
     final_predictions.append(sum(predicted)/float(len(predicted)))
-  print(json.dumps(all_predictions))
+  print(json.dumps(final_predictions))
