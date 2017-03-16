@@ -173,15 +173,17 @@ class StopSignLog
         csv << ssl.ml_row
       end
       csv.close
-      votes = JSON.parse(`python #{CONFIG["project_dir"]}predict.py -m #{vote_method} -f #{CONFIG["project_dir"]}ml_data_#{vote_method}.csv`.strip)
-      stop_ids.zip(votes).each do |stop_id, vote|
-        ssl = StopSignLog.first(stop_id: stop_id)
-        if vote > 0.5
-          ssl.voted_as[vote_method] = true
-        else
-          ssl.voted_as[vote_method] = false
+      if `ls #{CONFIG["project_dir"]}`.split("\n").include?("#{vote_method}.pkl")
+        votes = JSON.parse(`python #{CONFIG["project_dir"]}predict.py -m #{vote_method} -f #{CONFIG["project_dir"]}ml_data_#{vote_method}.csv`.strip)
+        stop_ids.zip(votes).each do |stop_id, vote|
+          ssl = StopSignLog.first(stop_id: stop_id)
+          if vote > 0.5
+            ssl.voted_as[vote_method] = true
+          else
+            ssl.voted_as[vote_method] = false
+          end
+          ssl.save!
         end
-        ssl.save!
       end
       `rm #{CONFIG["project_dir"]}ml_data_#{vote_method}.csv`
     end
