@@ -9,8 +9,8 @@ class RunPredictor
     csv = CSV.open("#{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv", "w")
     vote_avgs = []
     StopSignLog.each do |ssl|
-    vote_avg = Vote.where(stop_id: ssl.stop_id, vote_method: vote_method).to_a.collect(&:vote).average
       if Vote.where(stop_id: ssl.stop_id, vote_method: vote_method).count >= 1
+        vote_avg = Vote.where(stop_id: ssl.stop_id, vote_method: vote_method).to_a.collect(&:vote).average
         if vote_avg > 0.5
           vote_avg = 1
         else
@@ -42,6 +42,7 @@ class RunPredictor
         end
       end
       StopSignLog.bulk_train_ml
+      `rm #{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv`
     rescue Exception => e
       puts "Weird issue happened: #{e}"
     end
