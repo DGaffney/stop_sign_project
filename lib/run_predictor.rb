@@ -36,7 +36,8 @@ class RunPredictor
           ml = MachineLearner.first_or_create(vote_method: vote_method)
           prev_acc = ml.accuracy.to_f
           results = `python #{CONFIG["project_dir"]}/predictor.py --file #{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv --prev_acc #{prev_acc} --vote_method #{vote_method}`
-          ml.accuracy = (results.strip.to_f.round(4)*100)
+          ml.accuracy = (results.strip.split(",").first.to_f.round(4)*100)
+          ml.conmat = {"tp" => results.strip.split(",")[1].to_i, "tn" => results.strip.split(",")[2].to_i, "fp" => results.strip.split(",")[3].to_i, "fn" => results.strip.split(",")[4].to_i}
           ml.save!
         end
       end

@@ -221,4 +221,4 @@ if current_best_fn[-1] > args["prev_acc"]:
   model_file = open(args["vote_method"]+".pkl", "wb")
   pickle.dump(current_best_fn[0], model_file)
   model_file.close()
-  print current_best_fn[-1]
+  print str.join(",", [str(el) for el in [current_best_fn[-1], best_conmat["tp"], best_conmat["tn"], best_conmat["fp"], best_conmat["fn"]]])
