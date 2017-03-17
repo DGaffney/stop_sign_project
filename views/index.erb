@@ -10,12 +10,12 @@
     <%= ObservationPeriod.count.delimited %> Total scans, <%= StopSignLog.count.delimited %> total suspected cases
   </div>
   <div class="col">
-    <%= (@total_time/60/60).to_i.delimited %>+ Hours collected, spanning <%= ((ObservationPeriod.order(:end_time.desc).first.end_time-ObservationPeriod.order(:start_time).first.start_time)/60/60/24).to_i.delimited %> days
+    <%= (@total_time/60/60).to_i.delimited %>+ Hours collected, spanning <%= (@total_study_time/60/60/24).to_i.delimited %> days
   </div>
 </div>
 <div class="row">
   <div class="col">
-    ≈<%= MachineLearner.first(vote_method: "presence").estimated_count %> total cars seen, ≈<%= MachineLearner.first(vote_method: "full_scene").estimated_count %> seen long enough to measure.
+    ≈<%= MachineLearner.first(vote_method: "presence").estimated_count %> total cars seen, ≈<%= MachineLearner.first(vote_method: "full_scene").estimated_count %> seen long enough to measure. Given amount of time directly observed, an estimated <%= ((@total_time/@total_study_time)*MachineLearner.first(vote_method: "presence").estimated_count).to_i.delimited %> have passed the sign.
   </div>
 </div>
 <hr />

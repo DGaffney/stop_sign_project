@@ -6,6 +6,7 @@ VOTE_TYPES = {
 }
 get "/" do
   @total_time = ObservationPeriod.fields(:interevent_time).collect(&:interevent_time).sum
+  @total_study_time = (ObservationPeriod.order(:end_time.desc).first.end_time-ObservationPeriod.order(:start_time).first.start_time)
   erb :"index"
 end
 
