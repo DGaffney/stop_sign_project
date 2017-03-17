@@ -15,7 +15,7 @@
 </div>
 <div class="row">
   <div class="col">
-    ≈<%= MachineLearner.first(vote_method: "presence").estimated_count %> total cars seen, ≈<%= MachineLearner.first(vote_method: "full_scene").estimated_count %> seen long enough to measure. Given amount of time directly observed, an estimated <%= ((@total_study_time/@total_time)*MachineLearner.first(vote_method: "presence").estimated_count).to_i.delimited %> have passed the sign.
+    ≈<%= MachineLearner.first(vote_method: "presence").estimated_count %> total cars seen, ≈<%= MachineLearner.first(vote_method: "full_scene").estimated_count %> seen long enough to measure. Given amount of time directly observed, an estimated <%= ((@total_study_time/@total_time)*MachineLearner.first(vote_method: "presence").estimated_count).to_i.delimited %> cars have passed the sign.
   </div>
 </div>
 <hr />
