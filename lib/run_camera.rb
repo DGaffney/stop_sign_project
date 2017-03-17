@@ -46,6 +46,11 @@ class RunCamera
 
   def run
     while true
+      if rand < 0.10
+        puts "Updating ML Models!"
+        RunPredictor.new.run
+      end
+      sleep(20)
       puts "Hello again - time is now #{Time.now}, streaming starting"
       puts "Streaming"
       start_time = Time.now.utc
@@ -75,10 +80,6 @@ class RunCamera
       op.processed = false
       op.save!
       if `ls #{CONFIG["project_dir"]}`.split("\n").include?("stop_sign.log")
-        if rand < 0.10
-          puts "Updating ML Models!"
-          RunPredictor.new.run
-        end
         StopSignLog.import
         op.processed = true
         op.save!
