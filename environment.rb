@@ -1,3 +1,4 @@
+require 'twitter'
 require 'pry'
 require 'mongo_mapper'
 require 'oauth'
