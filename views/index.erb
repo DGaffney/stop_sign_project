@@ -9,21 +9,32 @@
   <div class="col">
     <h3><a href="/train/presence">Train Car Presence</a></h3>
     <%= Vote.where(vote_method: "presence").count.delimited %> total votes recorded
-    <p>Current Machine Accuracy: <%= MachineLearner.first(vote_method: "presence").accuracy %>% (<a href="/machine/presence">see examples</a>)</p>
+    <% if MachineLearner.first(vote_method: "presence") %>
+      <p>Current Machine Accuracy: <%= MachineLearner.first(vote_method: "presence").accuracy %>% (<a href="/machine/presence">see examples</a>)</p>
+    <% end %>
   </div>
   <div class="col">
     <h3><a href="/train/full_scene">Full Scene Check</a></h3>
     <%= Vote.where(vote_method: "full_scene").count.delimited %> total votes recorded
+    <% if MachineLearner.first(vote_method: "full_scene") %>
+      <p>Current Machine Accuracy: <%= MachineLearner.first(vote_method: "full_scene").accuracy %>% (<a href="/machine/full_scene">see examples</a>)</p>
+    <% end %>
   </div>
 </div>
 <div class="row">
   <div class="col">
     <h3><a href="/train/stop_violations">Train Stop Violations</a></h3>
     <%= Vote.where(vote_method: "stop_violations").count.delimited %> total votes recorded
+    <% if MachineLearner.first(vote_method: "stop_violations") %>
+      <p>Current Machine Accuracy: <%= MachineLearner.first(vote_method: "stop_violations").accuracy %>% (<a href="/machine/stop_violations">see examples</a>)</p>
+    <% end %>
   </div>
   <div class="col">
     <h3><a href="/train/wrong_way_violations">Train Wrong Way Violations</a></h3>
     <%= Vote.where(vote_method: "wrong_way_violations").count.delimited %> total votes recorded
+    <% if MachineLearner.first(vote_method: "wrong_way_violations") %>
+      <p>Current Machine Accuracy: <%= MachineLearner.first(vote_method: "wrong_way_violations").accuracy %>% (<a href="/machine/wrong_way_violations">see examples</a>)</p>
+    <% end %>
   </div>
 </div>
 <hr />
