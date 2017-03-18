@@ -46,11 +46,11 @@ class RunCamera
 
   def run
     while true
-      if rand < 0.10
-        puts "Updating ML Models!"
-        RunPredictor.new.run
-      end
-      sleep(20)
+#      if rand < 0.10
+#        puts "Updating ML Models!"
+#        RunPredictor.new.run
+#      end
+#      sleep(20)
       puts "Hello again - time is now #{Time.now}, streaming starting"
       puts "Streaming"
       start_time = Time.now.utc
