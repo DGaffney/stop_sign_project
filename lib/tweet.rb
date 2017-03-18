@@ -9,13 +9,13 @@ class Tweet
   end
 
   def self.tweet(imgur_url)
-    `wget #{imgur_url}v`
+    `wget #{imgur_url}`
     begin
-      client.update_with_media(self.text.shuffle.first+" "+self.hashtags.shuffle.first, File.new(imgur_url.split("/").last+"v"))
+      client.update_with_media(self.text.shuffle.first+" "+self.hashtags.shuffle.first, File.new(imgur_url.split("/").last))
     rescue
-      client.update_with_media(self.text.shuffle.first+" "+self.hashtags.shuffle.first+" (#{imgur_url})")
+      client.update(self.text.shuffle.first+" "+self.hashtags.shuffle.first+" (#{imgur_url})")
     end
-    `rm #{imgur_url.split("/").last}v`
+    `rm #{imgur_url.split("/").last}`
   end
 
   def self.hashtags
