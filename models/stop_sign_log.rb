@@ -198,9 +198,9 @@ class StopSignLog
 
   def get_url
     if self.imgur_url.nil? || self.imgur_url.empty?
-      "/gif_cases/#{self.observation_timestamp}_#{self.stop_id}.gif"
+      "/gif_cases/#{self.observation_timestamp}_#{self.stop_id}.gifv"
     else
-      self.imgur_url
+      self.imgur_url+"v"
     end
   end
 end

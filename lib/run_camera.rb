@@ -88,12 +88,12 @@ class RunCamera
       puts "Checking for unsaved imgurs..."
       [StopSignLog.where(imgur_url: nil).to_a, StopSignLog.where(imgur_url: "").to_a].flatten.each do |ssl|
         ssl_filename = "#{ssl.observation_timestamp}_#{ssl.stop_id}.gif"
-        `gifsicle -O3 #{CONFIG["project_dir"]}public/gif_cases/#{ssl_filename} -o #{CONFIG["project_dir"]}optim.gif --colors 128`
-        img_path = `python push_to_imgur.py -g #{CONFIG["project_dir"]}optim.gif`.strip
+        `gifsicle -O3 #{CONFIG["project_dir"]}public/gif_cases/#{ssl_filename} -o #{CONFIG["project_dir"]}#{ssl_filename}.gif --colors 128`
+        img_path = `python push_to_imgur.py -g #{CONFIG["project_dir"]}#{ssl_filename}.gif`.strip
         if img_path.include?("imgur")
           `rm #{CONFIG["project_dir"]}public/gif_cases/#{ssl_filename}`
         end
-        `rm #{CONFIG["project_dir"]}optim.gif`
+        `rm #{CONFIG["project_dir"]}#{ssl_filename}.gif`
         ssl.imgur_url = img_path
         ssl.save!
       end
