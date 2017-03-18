@@ -56,7 +56,7 @@
 
 @media only screen and (min-width: 768px) {
     .jumbotron_img_responsive { 
-      background-image: url("<%= @ssl.get_url.strip %>");
+      background-image: url("<%= @ssl.get_url %>");
       background-size: cover;
       min-height:249px;
       color: #f40000;
@@ -66,7 +66,7 @@
 /* For width 400px and larger: */
 @media only screen and (min-width: 750px) {
     .jumbotron_img_responsive { 
-      background-image: url("<%= @ssl.get_url.strip %>");
+      background-image: url("<%= @ssl.get_url %>");
       background-size: cover;
       min-height:402px;
       color: #f40000;
@@ -75,9 +75,6 @@
 }
 </style>
 <div class="jumbotron jumbotron_img_responsive" id="img">
-  <video preload="auto" autoplay="autoplay" loop="loop" style="width: 200px; height: 200px;">
-      <source src="//i.imgur.com/91S22q6.webm" type="video/webm"></source>
-  </video>
 </div>
 <hr>
 <div class="row">
