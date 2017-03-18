@@ -200,7 +200,7 @@ class StopSignLog
     if self.imgur_url.nil? || self.imgur_url.empty?
       "/gif_cases/#{self.observation_timestamp}_#{self.stop_id}.gifv"
     else
-      self.imgur_url+"v"
+      self.imgur_url.strip+"v"
     end
   end
 end
