@@ -45,6 +45,8 @@ class RunCamera
   end
 
   def run
+    puts "Cold start. Hanging around to wait for camera..."
+    sleep(60)
     while true
       if rand < 0.10
         puts "Updating ML Models!"
@@ -55,6 +57,8 @@ class RunCamera
         end
       end
       sleep(20)
+      puts "Sleeping for one minute to allow Ctrl-C..."
+      sleep(60)
       puts "Hello again - time is now #{Time.now}, streaming starting"
       puts "Streaming"
       start_time = Time.now.utc
@@ -105,8 +109,6 @@ class RunCamera
         ssl.imgur_url = img_path
         ssl.save!
       end
-      puts "Sleeping for one minute to allow Ctrl-C..."
-      sleep(60)
     end
   end
 
