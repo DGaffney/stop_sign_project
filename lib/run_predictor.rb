@@ -8,7 +8,7 @@ class RunPredictor
   def export_datasheet(vote_method, time)
     csv = CSV.open("#{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv", "w")
     vote_avgs = []
-    StopSignLog.fields(:stop_id, :ml_row).each do |ssl|
+    StopSignLog.to_a.each do |ssl|
       if Vote.where(stop_id: ssl.stop_id, vote_method: vote_method).count >= 1
         vote_avg = Vote.where(stop_id: ssl.stop_id, vote_method: vote_method).to_a.collect(&:vote).average
         if vote_avg > 0.5
@@ -37,10 +37,12 @@ class RunPredictor
           prev_acc = ml.accuracy.to_f
           start_time = Time.now
           results = `python #{CONFIG["project_dir"]}/predictor.py --file #{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv --prev_acc #{prev_acc} --vote_method #{vote_method} &`
-          ml.accuracy = (results.strip.split(",").first.to_f.round(4)*100)
-          ml.conmat = {"tp" => results.strip.split(",")[1].to_i, "tn" => results.strip.split(",")[2].to_i, "fp" => results.strip.split(",")[3].to_i, "fn" => results.strip.split(",")[4].to_i}
-          ml.save!
-          `rm #{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv`
+          if !results.strip.empty?
+            ml.accuracy = (results.strip.split(",").first.to_f.round(4)*100)
+            ml.conmat = {"tp" => results.strip.split(",")[1].to_i, "tn" => results.strip.split(",")[2].to_i, "fp" => results.strip.split(",")[3].to_i, "fn" => results.strip.split(",")[4].to_i}
+            ml.save!
+            `rm #{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv`
+          end
         end
       end
       StopSignLog.bulk_train_ml

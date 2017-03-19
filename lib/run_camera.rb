@@ -46,11 +46,15 @@ class RunCamera
 
   def run
     while true
-#      if rand < 0.10
-#        puts "Updating ML Models!"
-#        RunPredictor.new.run
-#      end
-#      sleep(20)
+      if rand < 0.10
+        puts "Updating ML Models!"
+        begin
+          RunPredictor.new.run
+        rescue
+          puts "Yet another weird Mongo ARM error..."
+        end
+      end
+      sleep(20)
       puts "Hello again - time is now #{Time.now}, streaming starting"
       puts "Streaming"
       start_time = Time.now.utc
@@ -61,6 +65,10 @@ class RunCamera
       while frame_count < 25*60+drop_frame_count && (Time.now.utc-start_time) < 10*60
         sleep(1)
         frame_count = get_frame_count
+      end
+      if get_frame_count == 0
+        #Camera is not working for some reason, no more pics are being taken. Restart Machine.
+        `sudo reboot`
       end
       puts "Stream finished. Converting"
       kill_stream(streamer_pid)
