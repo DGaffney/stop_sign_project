@@ -48,14 +48,14 @@ class RunCamera
     puts "Cold start. Hanging around to wait for camera..."
     sleep(60)
     while true
-      if rand < 0.10
-        puts "Updating ML Models!"
-        begin
-          RunPredictor.new.run
-        rescue
-          puts "Yet another weird Mongo ARM error..."
-        end
-      end
+      #if rand < 0.10
+      #  puts "Updating ML Models!"
+      #  begin
+      #    RunPredictor.new.run
+      #  rescue
+      #    puts "Yet another weird Mongo ARM error..."
+      #  end
+      #end
       sleep(20)
       puts "Sleeping for one minute to allow Ctrl-C..."
       sleep(60)
