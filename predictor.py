@@ -217,7 +217,7 @@ while total_iters < 200:
   except:
     gg = 1
 
-if current_best_fn[-1] > args["prev_acc"]:
+if current_best_fn[-1] > args["prev_acc"]/100:
   model_file = open(args["vote_method"]+".pkl", "wb")
   pickle.dump(current_best_fn[0], model_file)
   model_file.close()
