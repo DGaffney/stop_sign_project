@@ -20,7 +20,7 @@
 </div>
 <div class="row">
   <div class="col">
-    Machine learning on stop violations is still pending - too few actual stops to accurately assess. As of now, <%= (@current_violation_votes[0] / @current_violation_votes.sum).round(4) * 100 %>% of all stops are violations, leading to an estimated <%= (MachineLearner.first(vote_method: "presence").estimated_count*((@current_violation_votes[0] / @current_violation_votes.sum).round(4))).to_i.delimited %> observed violations, with an estimated ≈<%= ((@total_study_time/@total_time)*(MachineLearner.first(vote_method: "presence").estimated_count*((@current_violation_votes[0] / @current_violation_votes.sum).round(4)))).to_i.delimited %> total stop sign runs since monitoring began.
+    Machine learning on stop violations is still pending - too few actual stops to accurately assess. As of now, <%= (@current_violation_votes[0] / @current_violation_votes.sum).round(4) * 100 %>% of all stops are violations according to human assessment, leading to an estimated <%= (MachineLearner.first(vote_method: "presence").estimated_count*((@current_violation_votes[0] / @current_violation_votes.sum).round(4))).to_i.delimited %> observed violations, with an estimated ≈<%= ((@total_study_time/@total_time)*(MachineLearner.first(vote_method: "presence").estimated_count*((@current_violation_votes[0] / @current_violation_votes.sum).round(4)))).to_i.delimited %> total stop sign runs since monitoring began.
   </div>
 </div>
 <hr />
