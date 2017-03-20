@@ -18,6 +18,11 @@
     ≈<%= MachineLearner.first(vote_method: "presence").estimated_count %> total cars seen, ≈<%= MachineLearner.first(vote_method: "full_scene").estimated_count %> seen long enough to measure. An estimated ≈<%= ((@total_study_time/@total_time)*MachineLearner.first(vote_method: "presence").estimated_count).to_i.delimited %> cars have passed the sign, with an average of ≈<%= (((@total_study_time/@total_time)*MachineLearner.first(vote_method: "presence").estimated_count) / (@total_study_time/60/60/24)).to_i.delimited %> per day.
   </div>
 </div>
+<div class="row">
+  <div class="col">
+    Machine learning on stop violations is still pending - too few actual stops to accurately assess. As of now, <%= (@current_violation_votes[0] / @current_violation_votes.sum).round(4) * 100 %>% of all stops are violations, leading to an estimated <%= (MachineLearner.first(vote_method: "presence").estimated_count*((@current_violation_votes[0] / @current_violation_votes.sum).round(4))).to_i %> observed violations, with an estimated ≈<%= ((@total_study_time/@total_time)*(MachineLearner.first(vote_method: "presence").estimated_count*((@current_violation_votes[0] / @current_violation_votes.sum).round(4)))).to_i %> total stop sign runs since monitoring began.
+  </div>
+</div>
 <hr />
 <div class="row">
   <h2>🏋️ Help Train the Machine 🏋️</h2>
