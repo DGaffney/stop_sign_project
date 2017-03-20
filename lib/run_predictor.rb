@@ -27,27 +27,30 @@ class RunPredictor
   end
   
   def run
-    begin
-      time = Time.now
-      ["presence", "full_scene", "stop_violations", "wrong_way_violations"].each do |vote_method|
-        if can_be_learned(vote_method)
-          puts "Updating model of #{vote_method}"
+    time = Time.now
+    ["presence", "full_scene", "stop_violations", "wrong_way_violations"].each do |vote_method|
+      if can_be_learned(vote_method)
+        puts "Updating model of #{vote_method}"
+        filename = nil
+        begin
           filename = export_datasheet(vote_method, time)
-          ml = MachineLearner.first_or_create(vote_method: vote_method)
-          prev_acc = ml.accuracy.to_f
-          start_time = Time.now
-          results = `python #{CONFIG["project_dir"]}/predictor.py --file #{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv --prev_acc #{prev_acc} --vote_method #{vote_method} &`
-          if !results.strip.empty?
-            ml.accuracy = (results.strip.split(",").first.to_f.round(4)*100)
-            ml.conmat = {"tp" => results.strip.split(",")[1].to_i, "tn" => results.strip.split(",")[2].to_i, "fp" => results.strip.split(",")[3].to_i, "fn" => results.strip.split(",")[4].to_i}
-            ml.save!
-            `rm #{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv`
-          end
+        rescue => e
+          puts "Weird issue happened: #{e}"
+          retry
+        end
+        ml = MachineLearner.first_or_create(vote_method: vote_method)
+        prev_acc = ml.accuracy.to_f
+        start_time = Time.now
+        results = `python #{CONFIG["project_dir"]}/predictor.py --file #{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv --prev_acc #{prev_acc} --vote_method #{vote_method} &`
+        if !results.strip.empty?
+          ml.accuracy = (results.strip.split(",").first.to_f.round(4)*100)
+          ml.conmat = {"tp" => results.strip.split(",")[1].to_i, "tn" => results.strip.split(",")[2].to_i, "fp" => results.strip.split(",")[3].to_i, "fn" => results.strip.split(",")[4].to_i}
+          StopSignLog.bulk_train_ml(vote_method)
+          ml.save!
+          `rm #{CONFIG["project_dir"]}datasheet_#{vote_method}_#{time.to_i}.csv`
         end
       end
-      StopSignLog.bulk_train_ml
-    rescue Exception => e
-      puts "Weird issue happened: #{e}"
     end
   end
 end
+#RunPredictor.new.run

@@ -171,8 +171,8 @@ class StopSignLog
     end
   end  
 
-  def self.bulk_train_ml
-    ["presence", "stop_violations", "wrong_way_violations", "full_scene"].each do |vote_method|
+  def self.bulk_train_ml(vote_methods=["presence", "stop_violations", "wrong_way_violations", "full_scene"])
+    [vote_methods].flatten.each do |vote_method|
       stop_ids = []
       csv = CSV.open("#{CONFIG["project_dir"]}ml_data_#{vote_method}.csv", "w")
       StopSignLog.each do |ssl|
