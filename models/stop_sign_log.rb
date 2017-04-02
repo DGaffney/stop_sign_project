@@ -48,9 +48,9 @@ class StopSignLog
     counted = StopSignLog.fields(:observation_timestamp).where(conditions).collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
     counted_weekday = StopSignLog.fields(:observation_timestamp).where(conditions).select{|x| tt =Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)'); !(tt.saturday? || tt.sunday?)}.collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
     counted_weekend = StopSignLog.fields(:observation_timestamp).where(conditions).select{|x| tt =Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)'); tt.saturday? || tt.sunday?}.collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
-    min_range.upto(max_range).collect{|v| counted[v] ||= 0}
-    min_range.upto(max_range).collect{|v| counted_weekday[v] ||= 0}
-    min_range.upto(max_range).collect{|v| counted_weekend[v] ||= 0}
+    min_range.upto(max_range).collect{|v| counted[v] = 0 if !counted.keys.include?(v)}
+    min_range.upto(max_range).collect{|v| counted_weekday[v] = 0 if !counted_weekday.keys.include?(v)}
+    min_range.upto(max_range).collect{|v| counted_weekend[v] = 0 if !counted_weekend.keys.include?(v)}
     observation_density = {}
     first = ObservationPeriod.order(:start_time).first.start_time
     last = ObservationPeriod.order(:end_time.desc).first.end_time
