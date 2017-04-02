@@ -24,7 +24,7 @@ class StopSignLog
     total_study_time = (ObservationPeriod.order(:end_time.desc).first.end_time-ObservationPeriod.order(:start_time).first.start_time)
     current_violation_votes = [Vote.where(vote_method: "stop_violations", vote: 0).count, Vote.where(vote_method: "stop_violations", vote: 1).count]
     stats = Stats.first_or_create(name: "main")
-    stats.hourly = self.compressed_timeline("%H", "00", "24")
+    stats.hourly = self.compressed_timeline("%H", "00", "23")
     stats.daily = self.compressed_timeline("%w", "0", "6")
     stats.observation_period_count = ObservationPeriod.count
     stats.stop_sign_log_count = StopSignLog.count
@@ -57,11 +57,11 @@ class StopSignLog
     total_days = (last-first)/60/60/24
     coverage = 60*60*total_days
     rough_coverage = {}
-    ObservationPeriod.fields(:start_time, :interevent_time).to_a.each do |op|
+    ObservationPeriod.to_a.each do |op|
       rough_coverage[op.start_time.strftime(strftime)] ||= 0
       rough_coverage[op.start_time.strftime(strftime)] += op.interevent_time
     end
-    min_range.upto(max_range).collect{|v| rough_coverage[v] ||= 0}
+    min_range.upto(max_range).collect{|v| rough_coverage[v] ||= 1 if !rough_coverage.keys.include?(v)}
     amplification = Hash[rough_coverage.collect{|k,v| [k,1/(v/coverage)]}]
     {full: counted.collect{|k,v| [k, (v * amplification[k] * reduction).round]}.sort_by{|k,v| k.to_i},
     weekday: counted_weekday.collect{|k,v| [k, (v * amplification[k] * reduction).round]}.sort_by{|k,v| k.to_i},
