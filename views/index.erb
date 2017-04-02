@@ -71,37 +71,41 @@
 
     function drawBasic() {
 
-          var data = new google.visualization.DataTable();
-          data.addColumn('timeofday', 'Time of Day');
-          data.addColumn('number', 'Motivation Level');
-
-          data.addRows([
-            [{v: [8, 0, 0], f: '8 am'}, 1],
-            [{v: [9, 0, 0], f: '9 am'}, 2],
-            [{v: [10, 0, 0], f:'10 am'}, 3],
-            [{v: [11, 0, 0], f: '11 am'}, 4],
-            [{v: [12, 0, 0], f: '12 pm'}, 5],
-            [{v: [13, 0, 0], f: '1 pm'}, 6],
-            [{v: [14, 0, 0], f: '2 pm'}, 7],
-            [{v: [15, 0, 0], f: '3 pm'}, 8],
-            [{v: [16, 0, 0], f: '4 pm'}, 9],
-            [{v: [17, 0, 0], f: '5 pm'}, 10],
-          ]);
-
-          var options = {
-            title: 'Motivation Level Throughout the Day',
+        var data = google.visualization.arrayToDataTable([
+          ['Hour', 'Full', 'Weekday', 'Weekend'],
+          ['12 am', <%= @stats.hourly["full"][0][1] %>, <%= @stats.hourly["weekday"][0][1] %>, <%= @stats.hourly["weekend"][0][1] %>],
+          ['1 am', <%= @stats.hourly["full"][1][1] %>, <%= @stats.hourly["weekday"][1][1] %>, <%= @stats.hourly["weekend"][1][1] %>],
+          ['2 am', <%= @stats.hourly["full"][2][1] %>, <%= @stats.hourly["weekday"][2][1] %>, <%= @stats.hourly["weekend"][2][1] %>],
+          ['3 am', <%= @stats.hourly["full"][3][1] %>, <%= @stats.hourly["weekday"][3][1] %>, <%= @stats.hourly["weekend"][3][1] %>],
+          ['4 am', <%= @stats.hourly["full"][4][1] %>, <%= @stats.hourly["weekday"][4][1] %>, <%= @stats.hourly["weekend"][4][1] %>],
+          ['5 am', <%= @stats.hourly["full"][5][1] %>, <%= @stats.hourly["weekday"][5][1] %>, <%= @stats.hourly["weekend"][5][1] %>],
+          ['6 am', <%= @stats.hourly["full"][6][1] %>, <%= @stats.hourly["weekday"][6][1] %>, <%= @stats.hourly["weekend"][6][1] %>],
+          ['7 am', <%= @stats.hourly["full"][7][1] %>, <%= @stats.hourly["weekday"][7][1] %>, <%= @stats.hourly["weekend"][7][1] %>],
+          ['8 am', <%= @stats.hourly["full"][8][1] %>, <%= @stats.hourly["weekday"][8][1] %>, <%= @stats.hourly["weekend"][8][1] %>],
+          ['9 am', <%= @stats.hourly["full"][9][1] %>, <%= @stats.hourly["weekday"][9][1] %>, <%= @stats.hourly["weekend"][9][1] %>],
+          ['10 am', <%= @stats.hourly["full"][10][1] %>, <%= @stats.hourly["weekday"][10][1] %>, <%= @stats.hourly["weekend"][10][1] %>],
+          ['11 am', <%= @stats.hourly["full"][11][1] %>, <%= @stats.hourly["weekday"][11][1] %>, <%= @stats.hourly["weekend"][11][1] %>],
+          ['12 pm', <%= @stats.hourly["full"][12][1] %>, <%= @stats.hourly["weekday"][12][1] %>, <%= @stats.hourly["weekend"][12][1] %>],
+          ['1 pm', <%= @stats.hourly["full"][13][1] %>, <%= @stats.hourly["weekday"][13][1] %>, <%= @stats.hourly["weekend"][13][1] %>],
+          ['2 pm', <%= @stats.hourly["full"][14][1] %>, <%= @stats.hourly["weekday"][14][1] %>, <%= @stats.hourly["weekend"][14][1] %>],
+          ['3 pm', <%= @stats.hourly["full"][15][1] %>, <%= @stats.hourly["weekday"][15][1] %>, <%= @stats.hourly["weekend"][15][1] %>],
+          ['4 pm', <%= @stats.hourly["full"][16][1] %>, <%= @stats.hourly["weekday"][16][1] %>, <%= @stats.hourly["weekend"][16][1] %>],
+          ['5 pm', <%= @stats.hourly["full"][17][1] %>, <%= @stats.hourly["weekday"][17][1] %>, <%= @stats.hourly["weekend"][17][1] %>],
+          ['6 pm', <%= @stats.hourly["full"][18][1] %>, <%= @stats.hourly["weekday"][18][1] %>, <%= @stats.hourly["weekend"][18][1] %>],
+          ['7 pm', <%= @stats.hourly["full"][19][1] %>, <%= @stats.hourly["weekday"][19][1] %>, <%= @stats.hourly["weekend"][19][1] %>],
+          ['8 pm', <%= @stats.hourly["full"][20][1] %>, <%= @stats.hourly["weekday"][20][1] %>, <%= @stats.hourly["weekend"][20][1] %>],
+          ['9 pm', <%= @stats.hourly["full"][21][1] %>, <%= @stats.hourly["weekday"][21][1] %>, <%= @stats.hourly["weekend"][21][1] %>],
+          ['10 pm', <%= @stats.hourly["full"][22][1] %>, <%= @stats.hourly["weekday"][22][1] %>, <%= @stats.hourly["weekend"][22][1] %>],
+          ['11 pm', <%= @stats.hourly["full"][23][1] %>, <%= @stats.hourly["weekday"][23][1] %>, <%= @stats.hourly["weekend"][23][1] %>],
+        ]);
+       var options = {
+          chart: {
+            title: 'Average Daily Transits',
             hAxis: {
               title: 'Time of Day',
-              format: 'h:mm a',
-              viewWindow: {
-                min: [7, 30, 0],
-                max: [17, 30, 0]
-              }
-            },
-            vAxis: {
-              title: 'Rating (scale of 1-10)'
-            }
-          };
+              format: 'h:mm a'
+          }
+        };
 
           var chart = new google.visualization.ColumnChart(
             document.getElementById('chart_div'));
