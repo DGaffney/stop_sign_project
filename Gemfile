@@ -9,3 +9,4 @@ gem "tux"
 gem "oauth"
 gem "imgurapi"
 gem "twitter"
+gem 'tzinfo'

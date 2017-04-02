@@ -121,6 +121,7 @@ def run_ensemble_binary(filename, models, str_columns, keys_included):
   guesses = []
   fold_labels = [fold["test_labels"] for fold in folds]
   for clf in models:
+    #print clf
     this_conmat = {'fp': 0, 'fn': 0, 'tp': 0, 'tn': 0}
     this_guess = []
     for fold in folds:
