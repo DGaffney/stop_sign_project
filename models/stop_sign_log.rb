@@ -57,7 +57,7 @@ class StopSignLog
     total_days = (last-first)/60/60/24
     coverage = 60*60*total_days
     rough_coverage = {}
-    ObservationPeriod.fields(:start_time, :interevent_time).each do |op|
+    ObservationPeriod.fields(:start_time, :interevent_time).to_a.each do |op|
       rough_coverage[op.start_time.strftime(strftime)] ||= 0
       rough_coverage[op.start_time.strftime(strftime)] += op.interevent_time
     end
