@@ -128,14 +128,14 @@
     function drawBasic() {
 
         var data = google.visualization.arrayToDataTable([
-          ['Day of Week', 'Full', 'Weekday', 'Weekend'],
-          ['Sunday', <%= @stats.daily["full"][0][1] %>, <%= @stats.daily["weekday"][0][1] %>, <%= @stats.daily["weekend"][0][1] %>],
-          ['Monday', <%= @stats.daily["full"][1][1] %>, <%= @stats.daily["weekday"][1][1] %>, <%= @stats.daily["weekend"][1][1] %>],
-          ['Tuesday', <%= @stats.daily["full"][2][1] %>, <%= @stats.daily["weekday"][2][1] %>, <%= @stats.daily["weekend"][2][1] %>],
-          ['Wednesday', <%= @stats.daily["full"][3][1] %>, <%= @stats.daily["weekday"][3][1] %>, <%= @stats.daily["weekend"][3][1] %>],
-          ['Thursday', <%= @stats.daily["full"][4][1] %>, <%= @stats.daily["weekday"][4][1] %>, <%= @stats.daily["weekend"][4][1] %>],
-          ['Friday', <%= @stats.daily["full"][5][1] %>, <%= @stats.daily["weekday"][5][1] %>, <%= @stats.daily["weekend"][5][1] %>],
-          ['Saturday', <%= @stats.daily["full"][6][1] %>, <%= @stats.daily["weekday"][6][1] %>, <%= @stats.daily["weekend"][6][1] %>],
+          ['Day of Week', 'Weekday', 'Weekend'],
+          ['Sunday', <%= @stats.daily["weekday"][0][1] %>, <%= @stats.daily["weekend"][0][1] %>],
+          ['Monday', <%= @stats.daily["weekday"][1][1] %>, <%= @stats.daily["weekend"][1][1] %>],
+          ['Tuesday', <%= @stats.daily["weekday"][2][1] %>, <%= @stats.daily["weekend"][2][1] %>],
+          ['Wednesday', <%= @stats.daily["weekday"][3][1] %>, <%= @stats.daily["weekend"][3][1] %>],
+          ['Thursday', <%= @stats.daily["weekday"][4][1] %>, <%= @stats.daily["weekend"][4][1] %>],
+          ['Friday', <%= @stats.daily["weekday"][5][1] %>, <%= @stats.daily["weekend"][5][1] %>],
+          ['Saturday', <%= @stats.daily["weekday"][6][1] %>, <%= @stats.daily["weekend"][6][1] %>],
         ]);
        var options = {
           chart: {
