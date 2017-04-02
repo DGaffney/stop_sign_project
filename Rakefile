@@ -13,5 +13,14 @@ task :analyze_data do
 end
 
 task :summarize_data do
-  StopSignLog.generate_stats
+  while true
+    begin
+      puts Time.now
+      StopSignLog.generate_stats
+      puts "Sleeping for an hour!"
+      sleep(3600)
+    rescue
+      retry
+    end
+  end
 end

@@ -64,7 +64,8 @@
   <h2>📊 Current Stats ⏱️</h2>
 </div>
 <div class="row">
-  <div id="chart_div" style="width: 760px; height: 400px;"></div>
+  <h4>Average hourly stop sign runs</h4>
+  <div id="chart_div_hourly" style="width: 760px; height: 400px;"></div>
   <script>
     google.charts.load('current', {packages: ['corechart', 'bar']});
     google.charts.setOnLoadCallback(drawBasic);
@@ -102,6 +103,44 @@
           chart: {
             width: 760,
             height: 400,
+            title: 'Average Hourly Transits',
+            hAxis: {
+              title: 'Time of Day',
+              format: 'h:mm a'
+            }
+          }
+        };
+
+          var chart = new google.visualization.ColumnChart(
+            document.getElementById('chart_div_hourly'));
+
+          chart.draw(data, options);
+        }
+  </script>
+</div>
+<div class="row">
+  <h4>Average daily stop sign runs</h4>
+  <div id="chart_div_daily" style="width: 760px; height: 400px;"></div>
+  <script>
+    google.charts.load('current', {packages: ['corechart', 'bar']});
+    google.charts.setOnLoadCallback(drawBasic);
+
+    function drawBasic() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Day of Week', 'Full', 'Weekday', 'Weekend'],
+          ['Sunday', <%= @stats.daily["full"][0][1] %>, <%= @stats.daily["weekday"][0][1] %>, <%= @stats.daily["weekend"][0][1] %>],
+          ['Monday', <%= @stats.daily["full"][1][1] %>, <%= @stats.daily["weekday"][1][1] %>, <%= @stats.daily["weekend"][1][1] %>],
+          ['Tuesday', <%= @stats.daily["full"][2][1] %>, <%= @stats.daily["weekday"][2][1] %>, <%= @stats.daily["weekend"][2][1] %>],
+          ['Wednesday', <%= @stats.daily["full"][3][1] %>, <%= @stats.daily["weekday"][3][1] %>, <%= @stats.daily["weekend"][3][1] %>],
+          ['Thursday', <%= @stats.daily["full"][4][1] %>, <%= @stats.daily["weekday"][4][1] %>, <%= @stats.daily["weekend"][4][1] %>],
+          ['Friday', <%= @stats.daily["full"][5][1] %>, <%= @stats.daily["weekday"][5][1] %>, <%= @stats.daily["weekend"][5][1] %>],
+          ['Saturday', <%= @stats.daily["full"][6][1] %>, <%= @stats.daily["weekday"][6][1] %>, <%= @stats.daily["weekend"][6][1] %>],
+        ]);
+       var options = {
+          chart: {
+            width: 760,
+            height: 400,
             title: 'Average Daily Transits',
             hAxis: {
               title: 'Time of Day',
@@ -111,14 +150,12 @@
         };
 
           var chart = new google.visualization.ColumnChart(
-            document.getElementById('chart_div'));
+            document.getElementById('chart_div_daily'));
 
           chart.draw(data, options);
         }
   </script>
 </div>
-
-
 <div class="row">
   <div class="col">
     <%= @stats.observation_period_count.delimited %> Total scans, <%= @stats.stop_sign_log_count.delimited %> total suspected cases
