@@ -5,9 +5,7 @@ VOTE_TYPES = {
   "full_scene" => {"machine_vote_yes" => "Machine thinks GIF captures full car passage", "machine_vote_no" => "Machine thinks GIF doesn't capture full car passage", "vote_type" => "Full Clip Check", "vote_negative" => "No Complete Clip", "vote_affirmative" => "Yes Complete Clip", "vote_text" => "Does this clip capture enough video of the car to assess the stop? Press J if there isn't, K if there is (or just click the links below)"}
 }
 get "/" do
-  @total_time = ObservationPeriod.fields(:interevent_time).collect(&:interevent_time).sum
-  @total_study_time = (ObservationPeriod.order(:end_time.desc).first.end_time-ObservationPeriod.order(:start_time).first.start_time)
-  @current_violation_votes = [Vote.where(vote_method: "stop_violations", vote: 0).count, Vote.where(vote_method: "stop_violations", vote: 1).count]
+  @stats = Stats.first
   erb :"index"
 end
 

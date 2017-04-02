@@ -61,7 +61,8 @@ class Reporting
     csv << ["Full"]
     csv << ["Hour UTC", "Hour EST", "Obs Count", "Obs Coverage", "Percent Violation" "Re-scaled count" "Hour EST", "Number of Violations","Number of Violations During Ban"]
     "00".upto("23").to_a.collect{|x| [x, time_converter[x]]}.sort_by{|k,v| v.to_i}.each do |hour_utc, hour_est|
-    row = [hour_utc, hour_est, obs_expanded[hour_utc].count, Hash[coverage_ratio][hour_utc]]
+    true_est = obs_expanded[hour_utc].count*Hash[coverage_ratio][hour_utc]*current_violation_ratio
+    row = [hour_utc, hour_est, obs_expanded[hour_utc].count, Hash[coverage_ratio][hour_utc], current_violation_ratio, true_est]
     end
     puts weekend_coverage_ratio.collect{|x|x.join(",")}
     time_converter

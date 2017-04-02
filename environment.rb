@@ -1,3 +1,4 @@
+require 'tzinfo'
 require 'twitter'
 require 'pry'
 require 'mongo_mapper'

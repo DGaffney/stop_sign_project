@@ -19,6 +19,58 @@ class StopSignLog
   key :voted_as, Hash
   before_save :set_random
 
+  def self.generate_stats
+    total_time = ObservationPeriod.fields(:interevent_time).collect(&:interevent_time).sum
+    total_study_time = (ObservationPeriod.order(:end_time.desc).first.end_time-ObservationPeriod.order(:start_time).first.start_time)
+    current_violation_votes = [Vote.where(vote_method: "stop_violations", vote: 0).count, Vote.where(vote_method: "stop_violations", vote: 1).count]
+    stats = Stats.first_or_create(name: "main")
+    stats.hourly = self.compressed_timeline("%H", "00", "24")
+    stats.daily = self.compressed_timeline("%w", "0", "6")
+    stats.observation_period_count = ObservationPeriod.count
+    stats.stop_sign_log_count = StopSignLog.count
+    stats.seconds_observed = ObservationPeriod.fields(:interevent_time).collect(&:interevent_time).sum
+    first = ObservationPeriod.order(:start_time).first.start_time
+    last = ObservationPeriod.order(:end_time.desc).first.end_time
+    stats.total_study_time = last-first
+    stats.current_violation_votes = current_violation_votes
+    stats.presence_vote_count = Vote.where(vote_method: "presence").count
+    stats.full_scene_vote_count = Vote.where(vote_method: "full_scene").count
+    stats.stop_violations_vote_count = Vote.where(vote_method: "stop_violations").count
+    stats.wrong_way_violations_vote_count = Vote.where(vote_method: "wrong_way_violations").count
+    stats.save!
+  end
+
+  def self.compressed_timeline(strftime, min_range, max_range)
+    no_stop_vote_count = Vote.where(vote_method: "stop_violations", vote: 0).count
+    stop_vote_count = Vote.where(vote_method: "stop_violations", vote: 1).count
+    reduction = no_stop_vote_count.to_f / (no_stop_vote_count+stop_vote_count)
+    conditions = {"voted_as.presence" => true, "voted_as.full_scene" => true}
+    counted = StopSignLog.fields(:observation_timestamp).where(conditions).collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
+    counted_weekday = StopSignLog.fields(:observation_timestamp).where(conditions).select{|x| tt =Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)'); !(tt.saturday? || tt.sunday?)}.collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
+    counted_weekend = StopSignLog.fields(:observation_timestamp).where(conditions).select{|x| tt =Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)'); tt.saturday? || tt.sunday?}.collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
+    min_range.upto(max_range).collect{|v| counted[v] ||= 0}
+    observation_density = {}
+    first = ObservationPeriod.order(:start_time).first.start_time
+    last = ObservationPeriod.order(:end_time.desc).first.end_time
+    total_days = (last-first)/60/60/24
+    coverage = 60*60*total_days
+    rough_coverage = {}
+    ObservationPeriod.fields(:start_time, :interevent_time).each do |op|
+      rough_coverage[op.start_time.strftime(strftime)] ||= 0
+      rough_coverage[op.start_time.strftime(strftime)] += op.interevent_time
+    end
+    min_range.upto(max_range).collect{|v| rough_coverage[v] ||= 0}
+    amplification = Hash[rough_coverage.collect{|k,v| [k,1/(v/coverage)]}]
+    {full: counted.collect{|k,v| [k, (v * amplification[k] * reduction).round]}.sort_by{|k,v| k.to_i},
+    weekday: counted_weekday.collect{|k,v| [k, (v * amplification[k] * reduction).round]}.sort_by{|k,v| k.to_i},
+    weekend: counted_weekend.collect{|k,v| [k, (v * amplification[k] * reduction).round]}.sort_by{|k,v| k.to_i}}
+  end
+
+  def self.get_counts(strftime, conditions = {})
+    counted = StopSignLog.fields(:observation_timestamp).where(conditions).collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
+    time_width = self.get_time_width(strftime)
+    coverage = ObservationPeriod.fields(:observation_timestamp, :interevent_time).collect{|op| [op.observation_timestamp.strftime("%H"), op.interevent_time]}
+  end
   def self.indices
     StopSignLog.ensure_index([[:_random, 1], [:gif_saved, 1]])
     StopSignLog.ensure_index(:imgur_url)
