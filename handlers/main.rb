@@ -5,8 +5,15 @@ VOTE_TYPES = {
   "full_scene" => {"machine_vote_yes" => "Machine thinks GIF captures full car passage", "machine_vote_no" => "Machine thinks GIF doesn't capture full car passage", "vote_type" => "Full Clip Check", "vote_negative" => "No Complete Clip", "vote_affirmative" => "Yes Complete Clip", "vote_text" => "Does this clip capture enough video of the car to assess the stop? Press J if there isn't, K if there is (or just click the links below)"}
 }
 get "/" do
-  @stats = Stats.first
-  erb :"index"
+  @cache = "public/cache/index.html"
+  if File.exists?(@cache) && (Time.now - File.stat(@cache).mtime).to_i < 3600
+    File.read(@cache)
+  else
+    @stats = Stats.first
+    html = erb :"index"
+    File.write(@cache, html)
+    html
+  end
 end
 
 get "/train/:vote_method*" do
