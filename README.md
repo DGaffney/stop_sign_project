@@ -27,7 +27,10 @@ tmux send-keys -t "2" C-z 'rvmsudo rackup -p 80 -o 0.0.0.0' Enter
 tmux send-keys -t "3" C-z 'rake record_data' Enter
 tmux send-keys -t "4" C-z 'rake analyze_data' Enter
 tmux send-keys -t "4" C-z 'rake summarize_data' Enter
-````
+```
+
+This is fired off in `/etc/rc.local` by adding the following line: `sudo -u pi bash /home/pi/tmux_start.sh &`
+
 ## Installation
 
 In order to make this project work on your Raspberry Pi without any issues, you need to 1. install the OS from the [base install](https://www.raspberrypi.org/documentation/installation/installing-images/) on Raspberry Pi's site and 2. Follow [these steps](https://github.com/Tes3awy/OpenCV-3.2.0-Compiling-on-Raspberry-Pi) to install the right CV libraries. You could probably get away doing (2) without (1), but I wasn't able to, with whatever default OS I had on my Pi when I bought it. 

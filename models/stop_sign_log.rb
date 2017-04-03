@@ -25,7 +25,7 @@ class StopSignLog
     current_violation_votes = [Vote.where(vote_method: "stop_violations", vote: 0).count, Vote.where(vote_method: "stop_violations", vote: 1).count]
     stats = Stats.first_or_create(name: "main")
     stats.hourly = self.compressed_timeline("%H", "00", "23")
-    stats.daily = self.compressed_timeline_daily("%w", "0", "6")
+    stats.daily = self.compressed_timeline("%w", "0", "6")
     stats.observation_period_count = ObservationPeriod.count
     stats.stop_sign_log_count = StopSignLog.count
     stats.seconds_observed = ObservationPeriod.fields(:interevent_time).collect(&:interevent_time).sum
