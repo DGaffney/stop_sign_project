@@ -25,7 +25,7 @@ class StopSignLog
     current_violation_votes = [Vote.where(vote_method: "stop_violations", vote: 0).count, Vote.where(vote_method: "stop_violations", vote: 1).count]
     stats = Stats.first_or_create(name: "main")
     stats.hourly = self.compressed_timeline("%H", "00", "23")
-    stats.daily = self.compressed_timeline("%w", "0", "6")
+    stats.daily = self.compressed_timeline_daily("%w", "0", "6")
     stats.observation_period_count = ObservationPeriod.count
     stats.stop_sign_log_count = StopSignLog.count
     stats.seconds_observed = ObservationPeriod.fields(:interevent_time).collect(&:interevent_time).sum
@@ -38,6 +38,31 @@ class StopSignLog
     stats.stop_violations_vote_count = Vote.where(vote_method: "stop_violations").count
     stats.wrong_way_violations_vote_count = Vote.where(vote_method: "wrong_way_violations").count
     stats.save!
+  end
+
+  def self.compressed_timeline_daily(strftime, min_range, max_range)
+    no_stop_vote_count = Vote.where(vote_method: "stop_violations", vote: 0).count
+    stop_vote_count = Vote.where(vote_method: "stop_violations", vote: 1).count
+    reduction = no_stop_vote_count.to_f / (no_stop_vote_count+stop_vote_count)
+    conditions = {"voted_as.presence" => true, "voted_as.full_scene" => true}
+    counted = StopSignLog.fields(:observation_timestamp).where(conditions).collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
+    counted_weekday = StopSignLog.fields(:observation_timestamp).where(conditions).select{|x| tt =Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)'); !(tt.saturday? || tt.sunday?)}.collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
+    counted_weekend = StopSignLog.fields(:observation_timestamp).where(conditions).select{|x| tt =Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)'); tt.saturday? || tt.sunday?}.collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
+    min_range.upto(max_range).collect{|v| counted[v] = 0 if !counted.keys.include?(v)}
+    min_range.upto(max_range).collect{|v| counted_weekday[v] = 0 if !counted_weekday.keys.include?(v)}
+    min_range.upto(max_range).collect{|v| counted_weekend[v] = 0 if !counted_weekend.keys.include?(v)}
+    observation_density = {}
+    first = ObservationPeriod.order(:start_time).first.start_time
+    last = ObservationPeriod.order(:end_time.desc).first.end_time
+    total_days = (last-first)/60/60/24
+    rough_coverage = {}
+    ObservationPeriod.to_a.each do |op|
+      rough_coverage[op.start_time.strftime(strftime)] ||= 0
+      rough_coverage[op.start_time.strftime(strftime)] += op.interevent_time
+    end
+    min_range.upto(max_range).collect{|v| rough_coverage[v] ||= 1 if !rough_coverage.keys.include?(v)}
+    amplification = Hash[rough_coverage.collect{|k,v| [k,1/(v/(coverage/7))]}]
+    {full: counted.collect{|k,v| [k, (v * amplification[k] * reduction).round]}.sort_by{|k,v| k.to_i}}
   end
 
   def self.compressed_timeline(strftime, min_range, max_range)
@@ -55,7 +80,7 @@ class StopSignLog
     first = ObservationPeriod.order(:start_time).first.start_time
     last = ObservationPeriod.order(:end_time.desc).first.end_time
     total_days = (last-first)/60/60/24
-    coverage = 60*60*total_days
+    coverage = 60*60*24*total_days
     rough_coverage = {}
     ObservationPeriod.to_a.each do |op|
       rough_coverage[op.start_time.strftime(strftime)] ||= 0
