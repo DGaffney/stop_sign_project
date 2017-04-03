@@ -130,13 +130,13 @@
 
         var data = google.visualization.arrayToDataTable([
           ['Day of Week', 'Stop Sign Runs'],
-          ['Sunday', <%= total_violations_est*(@stats.daily["full"][0][1]/@stats.daily["full"].collect(&:last).collect(&:last).sum) %>],
-          ['Monday', <%= total_violations_est*(@stats.daily["full"][1][1]/@stats.daily["full"].collect(&:last).collect(&:last).sum) %>],
-          ['Tuesday', <%= total_violations_est*(@stats.daily["full"][2][1]/@stats.daily["full"].collect(&:last).collect(&:last).sum) %>],
-          ['Wednesday', <%= total_violations_est*(@stats.daily["full"][3][1]/@stats.daily["full"].collect(&:last).collect(&:last).sum) %>],
-          ['Thursday', <%= total_violations_est*(@stats.daily["full"][4][1]/@stats.daily["full"].collect(&:last).collect(&:last).sum) %>],
-          ['Friday', <%= total_violations_est*(@stats.daily["full"][5][1]/@stats.daily["full"].collect(&:last).collect(&:last).sum) %>],
-          ['Saturday', <%= total_violations_est*(@stats.daily["full"][6][1]/@stats.daily["full"].collect(&:last).collect(&:last).sum) %>],
+          ['Sunday', <%= total_violations_est*(@stats.daily["full"][0][1]/@stats.daily["full"].collect(&:last).sum) %>],
+          ['Monday', <%= total_violations_est*(@stats.daily["full"][1][1]/@stats.daily["full"].collect(&:last).sum) %>],
+          ['Tuesday', <%= total_violations_est*(@stats.daily["full"][2][1]/@stats.daily["full"].collect(&:last).sum) %>],
+          ['Wednesday', <%= total_violations_est*(@stats.daily["full"][3][1]/@stats.daily["full"].collect(&:last).sum) %>],
+          ['Thursday', <%= total_violations_est*(@stats.daily["full"][4][1]/@stats.daily["full"].collect(&:last).sum) %>],
+          ['Friday', <%= total_violations_est*(@stats.daily["full"][5][1]/@stats.daily["full"].collect(&:last).sum) %>],
+          ['Saturday', <%= total_violations_est*(@stats.daily["full"][6][1]/@stats.daily["full"].collect(&:last).sum) %>],
         ]);
        var options = {
           chart: {
