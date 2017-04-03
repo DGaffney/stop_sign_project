@@ -1,3 +1,4 @@
+<% total_violations_est = ((@stats.total_study_time/@stats.seconds_observed)*(MachineLearner.first(vote_method: "presence").estimated_count*((@stats.current_violation_votes[0] / @stats.current_violation_votes.sum).round(4)))).to_i %>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <div class="jumbotron jumbotron_img_responsive" id="header">
   <h1 class="display-3">Stop Sign Detector</h1>
@@ -129,13 +130,13 @@
 
         var data = google.visualization.arrayToDataTable([
           ['Day of Week', 'Stop Sign Runs'],
-          ['Sunday', <%= @stats.daily["full"][0][1] %>],
-          ['Monday', <%= @stats.daily["full"][1][1] %>],
-          ['Tuesday', <%= @stats.daily["full"][2][1] %>],
-          ['Wednesday', <%= @stats.daily["full"][3][1] %>],
-          ['Thursday', <%= @stats.daily["full"][4][1] %>],
-          ['Friday', <%= @stats.daily["full"][5][1] %>],
-          ['Saturday', <%= @stats.daily["full"][6][1] %>],
+          ['Sunday', <%= total_violations_est*(@stats.daily["full"][0][1]/@stats.daily["full"].values.collect(&:last).sum) %>],
+          ['Monday', <%= total_violations_est*(@stats.daily["full"][1][1]/@stats.daily["full"].values.collect(&:last).sum) %>],
+          ['Tuesday', <%= total_violations_est*(@stats.daily["full"][2][1]/@stats.daily["full"].values.collect(&:last).sum) %>],
+          ['Wednesday', <%= total_violations_est*(@stats.daily["full"][3][1]/@stats.daily["full"].values.collect(&:last).sum) %>],
+          ['Thursday', <%= total_violations_est*(@stats.daily["full"][4][1]/@stats.daily["full"].values.collect(&:last).sum) %>],
+          ['Friday', <%= total_violations_est*(@stats.daily["full"][5][1]/@stats.daily["full"].values.collect(&:last).sum) %>],
+          ['Saturday', <%= total_violations_est*(@stats.daily["full"][6][1]/@stats.daily["full"].values.collect(&:last).sum) %>],
         ]);
        var options = {
           chart: {
@@ -172,7 +173,7 @@
 </div>
 <div class="row">
   <div class="col">
-    Machine learning on stop violations is still pending - too few actual stops to accurately assess. As of now, <%= (@stats.current_violation_votes[0] / @stats.current_violation_votes.sum).round(4) * 100 %>% of all stops are violations according to human assessment, leading to an estimated <%= (MachineLearner.first(vote_method: "presence").estimated_count*((@stats.current_violation_votes[0] / @stats.current_violation_votes.sum).round(4))).to_i.delimited %> observed violations, with an estimated ≈<%= ((@stats.total_study_time/@stats.seconds_observed)*(MachineLearner.first(vote_method: "presence").estimated_count*((@stats.current_violation_votes[0] / @stats.current_violation_votes.sum).round(4)))).to_i.delimited %> total stop sign runs since monitoring began.
+    Machine learning on stop violations is still pending - too few actual stops to accurately assess. As of now, <%= (@stats.current_violation_votes[0] / @stats.current_violation_votes.sum).round(4) * 100 %>% of all stops are violations according to human assessment, leading to an estimated <%= (MachineLearner.first(vote_method: "presence").estimated_count*((@stats.current_violation_votes[0] / @stats.current_violation_votes.sum).round(4))).to_i.delimited %> observed violations, with an estimated ≈<%= total_violations_est.delimited %> total stop sign runs since monitoring began.
   </div>
 </div>
 <hr />
