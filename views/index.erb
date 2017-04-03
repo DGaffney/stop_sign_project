@@ -64,7 +64,7 @@
   <h2>📊 Current Stats ⏱️</h2>
 </div>
 <div class="row">
-  <h4>Average hourly stop sign runs</h4>
+  <h4>Total hourly stop sign runs</h4>
   <div id="chart_div_hourly" style="width: 760px; height: 400px;"></div>
   <script>
     google.charts.load('current', {packages: ['corechart', 'bar']});
@@ -103,7 +103,7 @@
           chart: {
             width: 760,
             height: 400,
-            title: 'Average Hourly Transits',
+            title: 'Total Hourly Transits',
             hAxis: {
               title: 'Time of Day',
               format: 'h:mm a'
@@ -119,7 +119,7 @@
   </script>
 </div>
 <div class="row">
-  <h4>Average daily stop sign runs</h4>
+  <h4>Total daily stop sign runs</h4>
   <div id="chart_div_daily" style="width: 760px; height: 400px;"></div>
   <script>
     google.charts.load('current', {packages: ['corechart', 'bar']});
@@ -141,7 +141,7 @@
           chart: {
             width: 760,
             height: 400,
-            title: 'Average Daily Transits',
+            title: 'Total Daily Transits',
             hAxis: {
               title: 'Time of Day',
               format: 'h:mm a'
@@ -155,6 +155,7 @@
           chart.draw(data, options);
         }
   </script>
+  <p>(Note that these totals result in separate totals due to the difference in resolution of hourly vs. daily)</p>
 </div>
 <div class="row">
   <div class="col">
