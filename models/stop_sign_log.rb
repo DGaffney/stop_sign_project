@@ -45,9 +45,10 @@ class StopSignLog
     stop_vote_count = Vote.where(vote_method: "stop_violations", vote: 1).count
     reduction = no_stop_vote_count.to_f / (no_stop_vote_count+stop_vote_count)
     conditions = {"voted_as.presence" => true, "voted_as.full_scene" => true}
-    counted = StopSignLog.fields(:observation_timestamp).where(conditions).collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
-    counted_weekday = StopSignLog.fields(:observation_timestamp).where(conditions).select{|x| tt =Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)'); !(tt.saturday? || tt.sunday?)}.collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
-    counted_weekend = StopSignLog.fields(:observation_timestamp).where(conditions).select{|x| tt =Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)'); tt.saturday? || tt.sunday?}.collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
+    all = StopSignLog.fields(:observation_timestamp).where(conditions).to_a;false
+    counted = all.collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
+    counted_weekday = all.select{|x| tt =Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)'); !(tt.saturday? || tt.sunday?)}.collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
+    counted_weekend = all.select{|x| tt =Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)'); tt.saturday? || tt.sunday?}.collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
     min_range.upto(max_range).collect{|v| counted[v] = 0 if !counted.keys.include?(v)}
     min_range.upto(max_range).collect{|v| counted_weekday[v] = 0 if !counted_weekday.keys.include?(v)}
     min_range.upto(max_range).collect{|v| counted_weekend[v] = 0 if !counted_weekend.keys.include?(v)}
@@ -67,6 +68,7 @@ class StopSignLog
     weekday: counted_weekday.collect{|k,v| [k, (v * amplification[k] * reduction).round]}.sort_by{|k,v| k.to_i},
     weekend: counted_weekend.collect{|k,v| [k, (v * amplification[k] * reduction).round]}.sort_by{|k,v| k.to_i}}
   end
+
 
   def self.get_counts(strftime, conditions = {})
     counted = StopSignLog.fields(:observation_timestamp).where(conditions).collect{|x| Time.at(x.observation_timestamp).in_time_zone('Eastern Time (US & Canada)').strftime(strftime)}.counts
